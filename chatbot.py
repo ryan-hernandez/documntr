@@ -105,12 +105,6 @@ chatbot = DocChatbot()
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    """
-    Flask route for handling HTTP requests to analyze and suggest documentation for code snippets.
-
-    Returns:
-        JSON: Response in JSON format containing analyzed code with documentation suggestions and summary.
-    """
     if request.method == 'POST':
         code = request.form['code']
         result = chatbot.analyzecode(code)
@@ -141,26 +135,39 @@ def index():
                     padding: 10px;
                     background-color: #f9f9f9;
                 }
-                pre {
-                    background-color: #f0f0f0;
-                    padding: 10px;
-                    border-radius: 5px;
-                }
-                code {
-                    font-family: Consolas, monospace;
-                }
-                .output {
-                    padding: 10px;
-                    border-radius: 5px;
-                }
-                .highlight {
-                    background-color: #eaffea;  /* Light green background for added documentation */
-                }
                 .summary {
                     background-color: #fff0e1;  /* Light orange background for summary */
                     padding: 10px;
                     border-radius: 5px;
                     margin-top: 20px;
+                }
+                .loading {
+                    display: none;
+                    text-align: center;
+                    margin-top: 20px;
+                }
+                .loading img {
+                    width: 50px;
+                }
+                pre {
+                    max-width: 100%;  /* Ensure code block doesn't exceed container width */
+                    overflow-x: auto;  /* Add horizontal scroll bar for overflow */
+                    background: #f5f5f5;
+                    border: 1px solid #ddd;
+                    border-radius: 3px;
+                    padding: 10px;
+                }
+                pre code {
+                    display: block;
+                    font-size: 16px;
+                    line-height: 1.4;
+                    word-break: break-all;
+                    white-space: pre;  /* Ensure text stays in single line */
+                }
+                .summary code {
+                    background-color: #f0f0f0;
+                    padding: 5px;
+                    border-radius: 3px;
                 }
             </style>
         </head>
@@ -168,20 +175,22 @@ def index():
             <h1>Documentation Suggestion Chatbot</h1>
             <textarea id="code" placeholder="Enter your code here..."></textarea><br>
             <button id="analyzeButton">Analyze and Suggest Documentation</button>
+            <div class="loading">
+                <img src="https://i.gifer.com/ZZ5H.gif" alt="Loading...">
+            </div>
             <div id="result"></div>
             <script>
                 function analyzeCode() {
+                    $('.loading').show();
+                    $('#result').hide();
                     $.post('/', {code: $('#code').val()}, function(data) {
+                        $('.loading').hide();
+                        $('#result').show();
                         if (data.error) {
                             $('#result').html('<div class="summary"><strong>Error:</strong><br>' + data.error + '</div>');
                         } else {
-                            const documentedCode = data.documented_code;
                             const summary = data.summary;
-                            
                             $('#result').html('<div class="summary"><strong>Summary of Documentation:</strong><br>' + marked.parse(summary) + '</div>');
-                            $('pre code').each(function(i, block) {
-                                hljs.highlightBlock(block);
-                            });
                         }
                     });
                 }
@@ -199,6 +208,10 @@ def index():
         </body>
         </html>
     ''')
+
+
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
