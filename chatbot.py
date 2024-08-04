@@ -119,27 +119,72 @@ def index():
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
             <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
             <style>
+                /* Font Import */
+                @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+                @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap');
+
                 body {
-                    font-family: Arial, sans-serif;
+                    font-family: 'Roboto', sans-serif;
                     max-width: 1200px;
                     margin: 0 auto;
                     padding: 20px;
                 }
                 textarea {
                     width: 100%;
-                    height: 200px;
+                    font-family: 'Fira Code', monospace; /* Matching code style font */
+                    font-size: 16px;
+                    line-height: 1.5;
+                    padding: 10px;
+                    border: 1px solid #ddd;
+                    border-radius: 5px;
+                    background-color: #f9f9f9;
+                    resize: none;
+                    outline: none;
+                    box-shadow: inset 0 1px 3px rgba(0,0,0,0.12);
+                    overflow-x: auto; /* Horizontal scrollbar for text overflow */
+                    max-height: 1000px; /* Maximum height */
+                    white-space: nowrap; /* Prevent text from wrapping */
+                }
+                textarea:focus {
+                    border-color: #999;
+                }
+                textarea::-webkit-input-placeholder {
+                    color: #999;
+                }
+                textarea::-moz-placeholder {
+                    color: #999;
+                }
+                textarea:-ms-input-placeholder {
+                    color: #999;
+                }
+                textarea:-moz-placeholder {
+                    color: #999;
                 }
                 #result {
                     margin-top: 20px;
                     border: 1px solid #ddd;
                     padding: 10px;
                     background-color: #f9f9f9;
+                    display: none; /* Hide result box by default */
                 }
                 .summary {
-                    background-color: #fff0e1;  /* Light orange background for summary */
-                    padding: 10px;
+                    background-color: #fff;
+                    padding: 15px;
                     border-radius: 5px;
                     margin-top: 20px;
+                    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                    font-family: 'Roboto', sans-serif;
+                    font-size: 16px;
+                }
+                .summary code {
+                    display: block;
+                    font-family: 'Fira Code', monospace;
+                    background-color: #f5f5f5;
+                    border: 1px solid #ddd;
+                    border-radius: 3px;
+                    padding: 10px;
+                    overflow-x: auto;
+                    max-width: 100%;
                 }
                 .loading {
                     display: none;
@@ -150,36 +195,62 @@ def index():
                     width: 50px;
                 }
                 pre {
-                    max-width: 100%;  /* Ensure code block doesn't exceed container width */
-                    overflow-x: auto;  /* Add horizontal scroll bar for overflow */
+                    max-width: 100%;
+                    overflow-x: auto;
                     background: #f5f5f5;
                     border: 1px solid #ddd;
                     border-radius: 3px;
                     padding: 10px;
+                    font-family: 'Fira Code', monospace;
                 }
                 pre code {
                     display: block;
                     font-size: 16px;
                     line-height: 1.4;
                     word-break: break-all;
-                    white-space: pre;  /* Ensure text stays in single line */
+                    white-space: pre;
                 }
-                .summary code {
-                    background-color: #f0f0f0;
-                    padding: 5px;
-                    border-radius: 3px;
+                #analyzeButton {
+                    background-color: #007bff; /* Bootstrap primary color */
+                    color: white;
+                    border: none;
+                    border-radius: 5px;
+                    padding: 10px 20px;
+                    font-size: 16px;
+                    cursor: pointer;
+                    transition: background-color 0.3s ease;
+                }
+                #analyzeButton:hover {
+                    background-color: #0056b3; /* Darker blue for hover */
+                }
+                #analyzeButton:focus {
+                    outline: none;
+                    box-shadow: 0 0 0 2px rgba(38, 143, 255, 0.5); /* Blue shadow for focus */
+                }
+                h1 {
+                    text-align: center; /* Center align the header */
+                    font-family: 'Roboto', sans-serif;
+                    font-size: 2em;
+                    margin-bottom: 20px;
                 }
             </style>
         </head>
         <body>
-            <h1>Documentation Suggestion Chatbot</h1>
-            <textarea id="code" placeholder="Enter your code here..."></textarea><br>
-            <button id="analyzeButton">Analyze and Suggest Documentation</button>
+            <title>documntr</title>
+            <h1>documntr</h1>
+            <textarea id="code" placeholder="Enter your code here..." spellcheck="false"></textarea><br>
+            <button id="analyzeButton">Analyze</button>
             <div class="loading">
                 <img src="https://i.gifer.com/ZZ5H.gif" alt="Loading...">
             </div>
             <div id="result"></div>
             <script>
+                function autoResizeTextarea() {
+                    var textarea = document.getElementById('code');
+                    textarea.style.height = 'auto'; // Reset height
+                    textarea.style.height = Math.min(textarea.scrollHeight, 1000) + 'px'; // Set height based on content but max 1000px
+                }
+
                 function analyzeCode() {
                     $('.loading').show();
                     $('#result').hide();
@@ -197,6 +268,7 @@ def index():
 
                 $(document).ready(function() {
                     $('#analyzeButton').on('click', analyzeCode);
+                    $('#code').on('input', autoResizeTextarea);
                 });
 
                 marked.setOptions({
@@ -208,10 +280,6 @@ def index():
         </body>
         </html>
     ''')
-
-
-
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
