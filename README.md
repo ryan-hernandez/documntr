@@ -3,6 +3,7 @@
 
 # Requirements
 - Docker
+- OpenAI API Key
 
 # Running App
 - Clone repository
