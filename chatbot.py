@@ -18,7 +18,7 @@ class DocChatbot:
         __init__: Initialize the chatbot with OpenAI API key and conversation history.
         load_conversation_history: Load past conversation history from a JSON file.
         save_conversation_history: Save the conversation history to a JSON file.
-        analyzecode: Analyze code and suggest documentation based on the chatbot's conversation history.
+        analyze_code: Analyze code and suggest documentation based on the chatbot's conversation history.
     """
     def __init__(self):
         """
@@ -52,7 +52,7 @@ class DocChatbot:
         with open('data/conversation_history.json', 'w') as f:
             json.dump(self.conversation_history, f)
 
-    def analyzecode(self, code):
+    def analyze_code(self, code):
         """
         Analyze the provided code and suggest documentation based on conversation history.
 
@@ -77,7 +77,11 @@ class DocChatbot:
                 messages.append({"role": "assistant", "content": entry["assistant_response"]})
             
             # Add the current code analysis request
-            messages.append({"role": "user", "content": f"Analyze this code and suggest appropriate documentation based on the recommended best practices for the given language:\n\n{code}"})
+            messages.append({"role": "user", "content": f"""Analyze the following code and suggest appropriate documentation based on the recommended best practices for the given language.
+                             Your response should include only the updated code, formatted with proper indentation for the specified language (if one can be ascertained).
+                             Do not include any markdown coding like fenced code blocks.
+                             Do not include any flavor text saying that you've updated the code or anything like that, simply output code.\n
+                             Code:\n\n{code}"""})
 
             response = openai.ChatCompletion.create(
                 model="gpt-4o-mini",
@@ -85,19 +89,18 @@ class DocChatbot:
             )
             suggestion = response.choices[0].message['content']
             
-            # Highlight the documentation
-            documented_code = code + "\n\n/* Documentation Suggested by AI: */\n" + "\n".join(
-                [f"<span class='highlight'>{line}</span>" if line.strip().startswith("#") else line for line in suggestion.split("\n")]
-            )
-            
             # Save this conversation to history
             self.conversation_history.append({
-                "user_message": f"Analyze this code and suggest appropriate documentation based on the recommended best practices for the given language:\n\n{code}",
+                "user_message": f"""Analyze the following code and suggest appropriate documentation based on the recommended best practices for the given language.
+                             Your response should include only the updated code, formatted with proper indentation for the specified language (if one can be ascertained).
+                             Do not include any markdown coding like fenced code blocks.
+                             Do not include any flavor text saying that you've updated the code or anything like that, simply output code.\n
+                             Code:\n\n{code}""",
                 "assistant_response": suggestion
             })
             self.save_conversation_history()
             
-            return {"documented_code": documented_code, "summary": suggestion}
+            return {"documented_code": suggestion, "summary": suggestion}
         except Exception as e:
             return {"error": f"An error occurred: {str(e)}"}
 
@@ -107,111 +110,99 @@ chatbot = DocChatbot()
 def index():
     if request.method == 'POST':
         code = request.form['code']
-        result = chatbot.analyzecode(code)
+        result = chatbot.analyze_code(code)
         return jsonify(result)
     return render_template_string('''
         <!DOCTYPE html>
         <html>
         <head>
-            <title>Documentation Suggestion Chatbot</title>
+            <title>documntr</title>
             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
             <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/monokai.min.css">
             <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+            <!-- CodeMirror Styles -->
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/dracula.min.css">
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
             <style>
                 /* Font Import */
                 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
                 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap');
 
+                html, body {
+                    height: 100%;
+                    margin: 0;
+                    padding: 0;
+                    overflow: hidden;
+                }
+                
                 body {
                     font-family: 'Roboto', sans-serif;
-                    max-width: 1200px;
+                    max-width: 100%;
                     margin: 0 auto;
                     padding: 20px;
+                    background-color: #333;
+                    color: #eee;
                 }
-                textarea {
-                    width: 100%;
-                    font-family: 'Fira Code', monospace; /* Matching code style font */
-                    font-size: 16px;
-                    line-height: 1.5;
-                    padding: 10px;
-                    border: 1px solid #ddd;
+
+                .CodeMirror {
+                    height: 800px; /* Set a fixed height */
+                    border: 1px solid #555;
                     border-radius: 5px;
-                    background-color: #f9f9f9;
-                    resize: none;
-                    outline: none;
-                    box-shadow: inset 0 1px 3px rgba(0,0,0,0.12);
-                    overflow-x: auto; /* Horizontal scrollbar for text overflow */
-                    max-height: 1000px; /* Maximum height */
-                    white-space: nowrap; /* Prevent text from wrapping */
                 }
-                textarea:focus {
-                    border-color: #999;
+
+                #inputContainer,
+                #resultContainer {
+                    display: inline-block;
+                    vertical-align: top;
+                    width: 45%; /* Reduced width to add more space between containers */
+                    margin: 0 2.5%; /* Even margins on both sides */
+                    margin-top: 20px;
                 }
-                textarea::-webkit-input-placeholder {
-                    color: #999;
+                
+                #resultContainer {
+                    margin-right: 0; /* No right margin for the last container */
                 }
-                textarea::-moz-placeholder {
-                    color: #999;
-                }
-                textarea:-ms-input-placeholder {
-                    color: #999;
-                }
-                textarea:-moz-placeholder {
-                    color: #999;
-                }
+
                 #result {
                     margin-top: 20px;
-                    border: 1px solid #ddd;
+                    border: 1px solid #555;
                     padding: 10px;
-                    background-color: #f9f9f9;
-                    display: none; /* Hide result box by default */
+                    background-color: #222;
+                    color: #eee;
+                    display: none;
+                    max-height: 500px; /* Adjust max height */
+                    overflow-y: auto;  /* Enable vertical scrolling */
                 }
-                .summary {
-                    background-color: #fff;
+
+                /* Center-aligned error */
+                .error {
+                    background-color: #333;
                     padding: 15px;
                     border-radius: 5px;
                     margin-top: 20px;
-                    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
                     font-family: 'Roboto', sans-serif;
                     font-size: 16px;
+                    max-height: 400px; /* Adjust max height */
+                    overflow-y: auto;  /* Enable vertical scrolling */
+                    text-align: center; /* Center-align text in the error */
                 }
-                .summary code {
-                    display: block;
-                    font-family: 'Fira Code', monospace;
-                    background-color: #f5f5f5;
-                    border: 1px solid #ddd;
-                    border-radius: 3px;
-                    padding: 10px;
-                    overflow-x: auto;
-                    max-width: 100%;
-                }
+
                 .loading {
                     display: none;
                     text-align: center;
                     margin-top: 20px;
                 }
+
                 .loading img {
                     width: 50px;
                 }
-                pre {
-                    max-width: 100%;
-                    overflow-x: auto;
-                    background: #f5f5f5;
-                    border: 1px solid #ddd;
-                    border-radius: 3px;
-                    padding: 10px;
-                    font-family: 'Fira Code', monospace;
-                }
-                pre code {
-                    display: block;
-                    font-size: 16px;
-                    line-height: 1.4;
-                    word-break: break-all;
-                    white-space: pre;
-                }
-                #analyzeButton {
-                    background-color: #007bff; /* Bootstrap primary color */
+
+                #analyzeButton, #newSessionButton {
+                    background-color: #007bff;
                     color: white;
                     border: none;
                     border-radius: 5px;
@@ -219,56 +210,127 @@ def index():
                     font-size: 16px;
                     cursor: pointer;
                     transition: background-color 0.3s ease;
+                    display: block;
+                    margin: 20px auto;
                 }
-                #analyzeButton:hover {
-                    background-color: #0056b3; /* Darker blue for hover */
+
+                #analyzeButton:hover, #newSessionButton:hover {
+                    background-color: #0056b3;
                 }
-                #analyzeButton:focus {
+
+                #analyzeButton:focus, #newSessionButton:focus {
                     outline: none;
-                    box-shadow: 0 0 0 2px rgba(38, 143, 255, 0.5); /* Blue shadow for focus */
+                    box-shadow: 0 0 0 2px rgba(38, 143, 255, 0.5);
                 }
+
+                #newSessionButton {
+                    background-color: #28a745;
+                }
+
+                #newSessionButton:hover {
+                    background-color: #218838;
+                }
+
                 h1 {
-                    text-align: center; /* Center align the header */
+                    text-align: center;
                     font-family: 'Roboto', sans-serif;
                     font-size: 2em;
+                    margin-top: 10px;
                     margin-bottom: 20px;
+                }
+
+                /* Custom scrollbars */
+                ::-webkit-scrollbar {
+                    width: 12px;
+                }
+
+                ::-webkit-scrollbar-thumb {
+                    background: #555;
+                    border-radius: 10px;
+                }
+
+                ::-webkit-scrollbar-thumb:hover {
+                    background: #777;
+                }
+
+                ::-webkit-scrollbar-track {
+                    background: #333;
                 }
             </style>
         </head>
         <body>
-            <title>documntr</title>
             <h1>documntr</h1>
-            <textarea id="code" placeholder="Enter your code here..." spellcheck="false"></textarea><br>
+            <div id="inputContainer">
+                <textarea id="code" placeholder="Enter your code here..." spellcheck="false"></textarea>
+            </div>
+            <div id="resultContainer">
+                <textarea id="summaryCode" style="display: none;"></textarea>
+            </div>
             <button id="analyzeButton">Analyze</button>
+            <button id="newSessionButton">New Session</button>
             <div class="loading">
                 <img src="https://i.gifer.com/ZZ5H.gif" alt="Loading...">
             </div>
-            <div id="result"></div>
+            <div id="error" class="error" style="display: none;">
+                <!-- Summary will be injected here -->
+            </div>
             <script>
-                function autoResizeTextarea() {
-                    var textarea = document.getElementById('code');
-                    textarea.style.height = 'auto'; // Reset height
-                    textarea.style.height = Math.min(textarea.scrollHeight, 1000) + 'px'; // Set height based on content but max 1000px
+                // Ensure CodeMirror initialization
+                var editor;
+                var summaryEditor;
+
+                function initializeEditor() {
+                    editor = CodeMirror.fromTextArea(document.getElementById('code'), {
+                        theme: 'dracula',
+                        lineNumbers: true,
+                        lineWrapping: false,
+                        scrollbarStyle: "native"
+                    });
+                }
+
+                function initializeSummaryEditor(code) {
+                    summaryEditor = CodeMirror.fromTextArea(document.getElementById('summaryCode'), {
+                        value: code,
+                        theme: 'dracula',
+                        lineNumbers: false,
+                        lineWrapping: false,
+                        readOnly: true,
+                        scrollbarStyle: "native"
+                    });
                 }
 
                 function analyzeCode() {
                     $('.loading').show();
-                    $('#result').hide();
-                    $.post('/', {code: $('#code').val()}, function(data) {
+                    $.post('/', { code: editor.getValue() }, function(data) {
                         $('.loading').hide();
-                        $('#result').show();
+                        $('#analyzeButton').hide(); // Hide analyze button
+                        $('#newSessionButton').show(); // Show new session button
+
                         if (data.error) {
-                            $('#result').html('<div class="summary"><strong>Error:</strong><br>' + data.error + '</div>');
+                            $('#error').html('<strong>Error:</strong><br>' + data.error).show();
                         } else {
-                            const summary = data.summary;
-                            $('#result').html('<div class="summary"><strong>Summary of Documentation:</strong><br>' + marked.parse(summary) + '</div>');
+                            const code = data.summary;
+                            console.log(data.summary);
+                            
+                            summaryEditor.setValue(code);
                         }
                     });
                 }
 
+                function startNewSession() {
+                    $('#newSessionButton').hide(); // Hide new session button
+                    $('#error').hide(); // Hide error section
+                    $('#analyzeButton').show(); // Show analyze button
+                    editor.setValue(''); // Clear code editor
+                    summaryEditor.setValue(''); // Clear generated code
+                }
+
                 $(document).ready(function() {
+                    initializeEditor();
+                    initializeSummaryEditor(null);
+                    $('#newSessionButton').hide(); // Hide new session button
                     $('#analyzeButton').on('click', analyzeCode);
-                    $('#code').on('input', autoResizeTextarea);
+                    $('#newSessionButton').on('click', startNewSession);
                 });
 
                 marked.setOptions({
