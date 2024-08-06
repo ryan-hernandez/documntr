@@ -68,7 +68,11 @@ class DocChatbot:
         try:
             # Prepare the messages, including conversation history
             messages = [
-                {"role": "system", "content": "You are a helpful assistant that analyzes code and suggests documentation based on the recommended best practices for the given language."}
+                {"role": "system", "content": """You are a helpful assistant that analyzes code and suggests documentation based on the recommended best practices for the given language.
+                                                Your response should include only the updated code, formatted with proper indentation for the specified language (if one can be ascertained).
+                                                Do not alter the functionality or layout of the code in any way other than to insert comments and documentation.
+                                                Do not include any markdown coding like fenced code blocks.
+                                                Do not include any flavor text saying that you've updated the code or anything like that, simply output code."""}
             ]
             
             # Add relevant conversation history
@@ -77,11 +81,7 @@ class DocChatbot:
                 messages.append({"role": "assistant", "content": entry["assistant_response"]})
             
             # Add the current code analysis request
-            messages.append({"role": "user", "content": f"""Analyze the following code and suggest appropriate documentation based on the recommended best practices for the given language.
-                             Your response should include only the updated code, formatted with proper indentation for the specified language (if one can be ascertained).
-                             Do not include any markdown coding like fenced code blocks.
-                             Do not include any flavor text saying that you've updated the code or anything like that, simply output code.\n
-                             Code:\n\n{code}"""})
+            messages.append({"role": "user", "content": f"Analyze the following code:\n\n{code}"})
 
             response = openai.ChatCompletion.create(
                 model="gpt-4o-mini",
@@ -90,12 +90,7 @@ class DocChatbot:
             suggestion = response.choices[0].message['content']
             
             # Save this conversation to history
-            self.conversation_history.append({
-                "user_message": f"""Analyze the following code and suggest appropriate documentation based on the recommended best practices for the given language.
-                             Your response should include only the updated code, formatted with proper indentation for the specified language (if one can be ascertained).
-                             Do not include any markdown coding like fenced code blocks.
-                             Do not include any flavor text saying that you've updated the code or anything like that, simply output code.\n
-                             Code:\n\n{code}""",
+            self.conversation_history.append({"user_message": f"Analyze the following code:\n\n{code}",
                 "assistant_response": suggestion
             })
             self.save_conversation_history()
@@ -142,7 +137,6 @@ def index():
                     font-family: 'Roboto', sans-serif;
                     max-width: 100%;
                     margin: 0 auto;
-                    padding: 20px;
                     background-color: #333;
                     color: #eee;
                 }
@@ -183,7 +177,6 @@ def index():
                     padding: 15px;
                     border-radius: 5px;
                     margin-top: 20px;
-                    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
                     font-family: 'Roboto', sans-serif;
                     font-size: 16px;
                     max-height: 400px; /* Adjust max height */
@@ -194,11 +187,22 @@ def index():
                 .loading {
                     display: none;
                     text-align: center;
-                    margin-top: 20px;
+                    margin-top: 40px;
                 }
-
-                .loading img {
-                    width: 50px;
+                
+                .spinner {
+                    border: 8px solid #f3f3f3; /* Light grey */
+                    border-top: 8px solid #007bff; /* Blue */
+                    border-radius: 50%;
+                    width: 40px;
+                    height: 40px;
+                    animation: spin 1s linear infinite;
+                    margin: 0 auto; /* Center the spinner horizontally */
+                }
+                
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
                 }
 
                 #analyzeButton, #newSessionButton {
@@ -269,7 +273,7 @@ def index():
             <button id="analyzeButton">Analyze</button>
             <button id="newSessionButton">New Session</button>
             <div class="loading">
-                <img src="https://i.gifer.com/ZZ5H.gif" alt="Loading...">
+                <div class="spinner"></div>
             </div>
             <div id="error" class="error" style="display: none;">
                 <!-- Summary will be injected here -->
