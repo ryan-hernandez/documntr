@@ -50,15 +50,14 @@ class DocChatbot:
         try:
             # Prepare the messages
             messages = [
-                {"role": "system", "content": """You are a helpful assistant that analyzes code and suggests documentation based on the recommended best practices for the given language.
-                                                Your response should include only the updated code, formatted with proper indentation for the specified language (if one can be ascertained).
-                                                Do not alter the functionality or layout of the code in any way other than to insert code documentation.
-                                                Under no circumstances are you to add comments inside functions or methods describing what the code does.
-                                                Provide documentation above each function or method giving a summary as well as detailing any parameters and return values.
-                                                Make sure each function in the class file contains documentation above it.
-                                                Also provide class level documentation describing what the class does.
-                                                Do not include any markdown coding like fenced code blocks.
-                                                Do not include any flavor text saying that you've updated the code or anything like that, simply output code."""}
+                {"role": "system", "content": """You are a code documentation assistant.
+                                                Your response is only code with added documentation, formatted with proper indentation.
+                                                Do not alter the functionality of the code.
+                                                Do not add comments inside functions.
+                                                Add documentation above each function.
+                                                Add class level documentation.
+                                                Do not include any markdown coding in your response.
+                                                Do not include any flavor text in your response, simply output code."""}
             ]
             
             # Add the current code analysis request
@@ -316,7 +315,7 @@ def index():
                 function updateTimer() {
                     if (startTime) {
                         var currentTime = (Date.now() - startTime) / 1000;
-                        $('#timer').text('Current Time: ' + currentTime.toFixed(2) + 's');
+                        $('#timer').text('Current Time: ' + currentTime.toFixed(1) + 's');
                     }
                 }
 
