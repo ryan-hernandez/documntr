@@ -1,12 +1,12 @@
 """
 Module: chatbot_app.py
 Description: A Flask application implementing a chatbot that suggests documentation based on code analysis.
-Dependencies: Flask, OpenAI, 'data/conversation_history.json' file
+Dependencies: Flask, OpenAI
 """
 import os
-import json
 import openai
 from flask import Flask, request, render_template_string, jsonify
+import time
 
 app = Flask(__name__)
 
@@ -15,14 +15,12 @@ class DocChatbot:
     Class to handle code analysis and documentation suggestion using OpenAI chat model.
     
     Methods:
-        __init__: Initialize the chatbot with OpenAI API key and conversation history.
-        load_conversation_history: Load past conversation history from a JSON file.
-        save_conversation_history: Save the conversation history to a JSON file.
-        analyze_code: Analyze code and suggest documentation based on the chatbot's conversation history.
+        __init__: Initialize the chatbot with OpenAI API key.
+        analyze_code: Analyze code and suggest documentation.
     """
     def __init__(self):
         """
-        Initialize the DocChatbot instance with OpenAI API key and conversation history.
+        Initialize the DocChatbot instance with OpenAI API key.
         """
         # Set up OpenAI API
         self.api_key = os.getenv("OPENAI_API_KEY")
@@ -30,31 +28,13 @@ class DocChatbot:
             raise ValueError("OPENAI_API_KEY environment variable is not set.")
         
         openai.api_key = self.api_key
-        
-        # Initialize conversation history
-        self.conversation_history = self.load_conversation_history()
-
-    def load_conversation_history(self):
-        """
-        Load conversation history from a JSON file.
-        """
-        try:
-            with open('data/conversation_history.json', 'r') as f:
-                return json.load(f)
-        except FileNotFoundError:
-            return []
-
-    def save_conversation_history(self):
-        """
-        Save the conversation history to a JSON file.
-        """
-        os.makedirs('data', exist_ok=True)
-        with open('data/conversation_history.json', 'w') as f:
-            json.dump(self.conversation_history, f)
+        self.total_time = 0
+        self.num_generations = 0
+        self.total_tokens = 0
 
     def analyze_code(self, code):
         """
-        Analyze the provided code and suggest documentation based on conversation history.
+        Analyze the provided code and suggest documentation.
 
         Args:
             code (str): The code snippet to analyze.
@@ -65,37 +45,48 @@ class DocChatbot:
         if not code:
             return {"error": "Please enter some code to analyze."}
 
+        start_time = time.time()
+        
         try:
-            # Prepare the messages, including conversation history
+            # Prepare the messages
             messages = [
                 {"role": "system", "content": """You are a helpful assistant that analyzes code and suggests documentation based on the recommended best practices for the given language.
                                                 Your response should include only the updated code, formatted with proper indentation for the specified language (if one can be ascertained).
-                                                Do not alter the functionality or layout of the code in any way other than to insert comments and documentation.
+                                                Do not alter the functionality or layout of the code in any way other than to insert code documentation.
+                                                Under no circumstances are you to add comments inside functions or methods describing what the code does.
+                                                Provide documentation above each function or method giving a summary as well as detailing any parameters and return values.
+                                                Make sure each function in the class file contains documentation above it.
+                                                Also provide class level documentation describing what the class does.
                                                 Do not include any markdown coding like fenced code blocks.
                                                 Do not include any flavor text saying that you've updated the code or anything like that, simply output code."""}
             ]
-            
-            # Add relevant conversation history
-            for entry in self.conversation_history[-5:]:  # Use last 5 conversations
-                messages.append({"role": "user", "content": entry["user_message"]})
-                messages.append({"role": "assistant", "content": entry["assistant_response"]})
             
             # Add the current code analysis request
             messages.append({"role": "user", "content": f"Analyze the following code:\n\n{code}"})
 
             response = openai.ChatCompletion.create(
-                model="gpt-4o-mini",
+                model="gpt-4",
                 messages=messages
             )
             suggestion = response.choices[0].message['content']
             
-            # Save this conversation to history
-            self.conversation_history.append({"user_message": f"Analyze the following code:\n\n{code}",
-                "assistant_response": suggestion
-            })
-            self.save_conversation_history()
-            
-            return {"documented_code": suggestion, "summary": suggestion}
+            end_time = time.time()
+            generation_time = end_time - start_time
+            self.total_time += generation_time
+            self.num_generations += 1
+            self.total_tokens += len(code.split())
+
+            average_time = self.total_time / self.num_generations
+            average_tokens = self.total_tokens / self.num_generations
+            token_time_ratio = average_tokens / average_time
+
+            return {
+                "documented_code": suggestion,
+                "summary": suggestion,
+                "generation_time": generation_time,
+                "average_time": average_time,
+                "token_time_ratio": token_time_ratio
+            }
         except Exception as e:
             return {"error": f"An error occurred: {str(e)}"}
 
@@ -260,6 +251,16 @@ def index():
                 ::-webkit-scrollbar-track {
                     background: #333;
                 }
+
+                /* Timer Styles */
+                #timerContainer {
+                    text-align: center;
+                    margin-top: 20px;
+                }
+                #timer, #averageTime, #tokenTimeRatio {
+                    font-family: 'Roboto', sans-serif;
+                    font-size: 18px;
+                }
             </style>
         </head>
         <body>
@@ -278,10 +279,19 @@ def index():
             <div id="error" class="error" style="display: none;">
                 <!-- Summary will be injected here -->
             </div>
+            <div id="timerContainer">
+                <div id="timer">Current Time: 0s</div>
+                <div id="averageTime">Average Time: 0s</div>
+                <div id="tokenTimeRatio">Token/Time Ratio: 0</div>
+            </div>
             <script>
                 // Ensure CodeMirror initialization
                 var editor;
                 var summaryEditor;
+                var startTime;
+                var totalGenerationTime = 0;
+                var numGenerations = 0;
+                var totalTokens = 0;
 
                 function initializeEditor() {
                     editor = CodeMirror.fromTextArea(document.getElementById('code'), {
@@ -303,9 +313,33 @@ def index():
                     });
                 }
 
+                function updateTimer() {
+                    if (startTime) {
+                        var currentTime = (Date.now() - startTime) / 1000;
+                        $('#timer').text('Current Time: ' + currentTime.toFixed(2) + 's');
+                    }
+                }
+
+                function updateMetrics(data) {
+                    totalGenerationTime += data.generation_time;
+                    numGenerations++;
+                    totalTokens += editor.getValue().split(' ').length;
+
+                    var averageTime = totalGenerationTime / numGenerations;
+                    var averageTokens = totalTokens / numGenerations;
+                    var tokenTimeRatio = averageTokens / averageTime;
+
+                    $('#averageTime').text('Average Time: ' + averageTime.toFixed(2) + 's');
+                    $('#tokenTimeRatio').text('Token/Time Ratio: ' + tokenTimeRatio.toFixed(2));
+                }
+
                 function analyzeCode() {
                     $('.loading').show();
+                    startTime = Date.now();
+                    var timerInterval = setInterval(updateTimer, 100);
+
                     $.post('/', { code: editor.getValue() }, function(data) {
+                        clearInterval(timerInterval);
                         $('.loading').hide();
                         $('#analyzeButton').hide(); // Hide analyze button
                         $('#newSessionButton').show(); // Show new session button
@@ -317,6 +351,7 @@ def index():
                             console.log(data.summary);
                             
                             summaryEditor.setValue(code);
+                            updateMetrics(data);
                         }
                     });
                 }
