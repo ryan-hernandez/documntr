@@ -1,0 +1,71 @@
+# Version control
+.git
+.gitignore
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env
+venv
+pip-log.txt
+pip-delete-this-directory.txt
+.tox
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.mypy_cache
+.pytest_cache
+.hypothesis
+
+# Node
+node_modules
+npm-debug.log
+yarn-error.log
+
+# React / Vue build output
+build
+dist
+
+# IDEs and editors
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Project specific
+README.md
+LICENSE
+*.md
+
+# Test directories
+tests
+test
+
+# Documentation
+docs
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
