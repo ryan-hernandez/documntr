@@ -3,14 +3,22 @@ from flask_cors import CORS
 from chatbot import DocChatbot
 import os
 
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+from chatbot import DocChatbot
+import os
+
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key')  # Use environment variable
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key')
 CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 
-# Only use DebugToolbarExtension in debug mode
-if app.debug:
-    from flask_debugtoolbar import DebugToolbarExtension
-    toolbar = DebugToolbarExtension(app)
+# Use FLASK_DEBUG environment variable instead of FLASK_ENV
+if os.environ.get('FLASK_DEBUG') == '1':
+    try:
+        from flask_debugtoolbar import DebugToolbarExtension
+        toolbar = DebugToolbarExtension(app)
+    except ImportError:
+        print("DebugToolbarExtension not available. Skipping.")
 
 chatbot = DocChatbot()
 
@@ -51,4 +59,4 @@ if __name__ == '__main__':
     Returns:
         None
     """
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=os.environ.get('FLASK_DEBUG') == '1')
