@@ -76,10 +76,6 @@ docker-compose run frontend npm test
 docker-compose run backend pytest
 ```
 
-## Contributing
-
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for more details.
-
 ## Troubleshooting
 
 Common issues and their solutions:
