@@ -1,6 +1,6 @@
 # documntr
 
-documntr is a web application that automatically generates documentation for Python code using AI. It consists of a React frontend and a Flask backend.
+documntr is a web application that automatically generates documentation for code using AI. It consists of a React frontend and a Flask backend.
 
 ## Project Structure
 
