@@ -43,8 +43,7 @@ class DocChatbot:
 
             return {
                 "documented_code": suggestion,
-                "summary": suggestion,
-                "generation_time": generation_time,
+                "generation_time": self.current_generation_time,
                 "average_time": self.total_time / self.num_generations,
                 "token_time_ratio": self.total_tokens / self.total_time
             }
@@ -52,6 +51,7 @@ class DocChatbot:
             return {"error": f"An error occurred: {str(e)}"}
 
     def _update_metrics(self, generation_time, tokens):
-        self.total_time += generation_time
+        self.current_generation_time = generation_time
+        self.total_time += self.current_generation_time
         self.num_generations += 1
         self.total_tokens += tokens
