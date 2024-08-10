@@ -30,13 +30,17 @@ documntr/
 
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/documntr.git
+   git clone https://github.com/ryan-hernandez/documntr.git
    cd documntr
    ```
 
 2. Create a `.env` file in the root directory and add your OpenAI API key:
    ```
    OPENAI_API_KEY=your_api_key_here
+   ```
+   Alternatively, you can register your key in a local environment variable:
+   ```
+   export OPEN_API_KEY=<your-key-here>
    ```
 
 3. Build and run the Docker containers:
