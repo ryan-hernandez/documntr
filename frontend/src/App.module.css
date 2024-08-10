@@ -5,15 +5,15 @@
  * This class sets the background color, text color, minimum height, padding,
  * font family, and flexbox layout for the app.
  */
-.app {
-    background-color: #1e1e1e;
-    color: #d4d4d4;
-    min-height: 100vh;
-    padding: 2rem;
-    font-family: 'Roboto', sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+ .app {
+  background-color: #1e1e1e;
+  color: #d4d4d4;
+  min-height: 100vh;
+  padding: 2rem;
+  font-family: 'Source Code Pro', monospace;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /**
@@ -47,7 +47,7 @@
  * for buttons.
  */
 .button {
-  background-color: #9499a3;
+  background-color: #f6f8fa;
   color: #282c34;
   border: none;
   padding: 0.8rem 1.5rem;

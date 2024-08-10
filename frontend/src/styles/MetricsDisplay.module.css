@@ -1,62 +1,53 @@
-.metrics {
-  /** 
-   * Styles the main metrics container.
-   * 
-   * This container has a dark background, padding, rounded corners, 
-   * and a specified width. It is also designed to display its child 
-   * elements in a flexible container.
-   */
-  background-color: #282c34;
-  padding: 1rem;
-  border-radius: 8px;
+.metricsContainer {
+  background-color: rgba(40, 44, 52, 0.7);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 20px;
   margin-bottom: 2rem;
   display: flex;
-  justify-content: space-around;
-  width: 60%;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 800px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .metricItem {
-  /** 
-   * Styles each individual metric item.
-   * 
-   * This class centers the text within the metric item.
-   */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
+  padding: 0 10px;
 }
 
-.metricItem h3 {
-  /** 
-   * Styles the heading of each metric item.
-   * 
-   * This class sets the margin below the heading to create spacing 
-   * between it and subsequent elements.
-   */
-  margin-bottom: 0.5rem;
+.metricLabel {
+  font-size: 0.8rem;
+  color: #8a9199;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.metricItem p {
-  /** 
-   * Styles the paragraph within each metric item.
-   * 
-   * This class removes the default margin and increases the font size 
-   * for better readability.
-   */
-  margin: 0;
+.metricValue {
   font-size: 1.2rem;
+  color: #e2e4e7;
+  font-weight: 500;
 }
 
-.testSessionIndicator {
-  /** 
-   * Styles the test session indicator label.
-   * 
-   * This class assigns background color, text color, padding, 
-   * and rounded corners to enhance its visual appearance.
-   */
-  background-color: #ffa500;
-  color: white;
-  padding: 5px 10px;
-  border-radius: 4px;
-  font-weight: bold;
-  margin-bottom: 10px;
-  text-align: center;
+/* Styles for responsive design */
+@media (max-width: 768px) {
+  .metricsContainer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .metricItem {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .metricLabel {
+    margin-bottom: 0;
+  }
 }

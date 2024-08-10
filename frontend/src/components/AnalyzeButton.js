@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../App.module.css';
+import styles from '../styles/AnalyzeButton.module.css';
 
 /**
  * A button component that triggers an analysis action.
@@ -10,12 +10,11 @@ import styles from '../App.module.css';
  * @returns {JSX.Element} The rendered button component.
  */
 const AnalyzeButton = ({ onClick, isAnalyzing }) => (
-  <button className={styles.button} onClick={onClick} disabled={isAnalyzing}>
-    {isAnalyzing ? (
-      'Analyzing...'
-    ) : (
-      'Analyze'
-    )}
+  <button className={styles.analyzeButton} onClick={onClick} disabled={isAnalyzing}>
+    <span className={styles.buttonText}>
+      {isAnalyzing ? 'Analyzing...' : 'Analyze'}
+    </span>
+    {isAnalyzing && <span className={styles.spinner}></span>}
   </button>
 );
 
