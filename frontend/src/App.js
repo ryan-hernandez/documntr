@@ -1,63 +1,178 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { python } from '@codemirror/lang-python';
 import { dracula } from '@uiw/codemirror-theme-dracula';
 import axios from 'axios';
+import { Scrollbars } from 'react-custom-scrollbars-2'; 
+import styles from './App.module.css';
 
 function App() {
   const [inputCode, setInputCode] = useState('');
   const [documentedCode, setDocumentedCode] = useState('');
-  const [metrics, setMetrics] = useState(null);
+  const [metrics, setMetrics] = useState({ generationTime: 0, averageTime: 0, tokenTimeRatio: 0 });
   const [error, setError] = useState(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const startTimeRef = useRef(null);
+  const timerRef = useRef(null);
+  const isAnalyzingRef = useRef(false);
+
+  useEffect(() => {
+    isAnalyzingRef.current = isAnalyzing;
+    if (isAnalyzing) {
+      startTimeRef.current = performance.now();
+      updateTimer();
+    } else {
+      if (timerRef.current) {
+        cancelAnimationFrame(timerRef.current);
+      }
+    }
+
+    return () => {
+      if (timerRef.current) {
+        cancelAnimationFrame(timerRef.current);
+      }
+    };
+  }, [isAnalyzing]);
+
+  const updateTimer = () => {
+    if (!isAnalyzingRef.current) {
+      return;
+    }
+    const currentTime = performance.now();
+    const elapsedTime = (currentTime - startTimeRef.current) / 1000;
+    setMetrics(prev => ({
+      ...prev,
+      generationTime: elapsedTime
+    }));
+    timerRef.current = requestAnimationFrame(updateTimer);
+  };
+
+  const renderThumb = ({ style, ...props }) => {
+    const thumbStyle = {
+      borderRadius: '4px',
+      backgroundColor: '#888',
+    };
+    return <div style={{ ...style, ...thumbStyle }} {...props} />;
+  };
+
+  const renderTrackVertical = ({ style, ...props }) => {
+    const trackStyle = {
+      backgroundColor: '#333',
+      borderRadius: '4px',
+      right: 2,
+      bottom: 2,
+      top: 2,
+      width: '10px',
+    };
+    return <div style={{ ...style, ...trackStyle }} {...props} />;
+  };
+  
+  const renderTrackHorizontal = ({ style, ...props }) => {
+    const trackStyle = {
+      backgroundColor: '#333',
+      borderRadius: '4px',
+      left: 2,
+      right: 2,
+      bottom: 2,
+      height: '10px',
+    };
+    return <div style={{ ...style, ...trackStyle }} {...props} />;
+  };
+  
+  const renderView = ({ style, ...props }) => {
+    const viewStyle = {
+      padding: '0 16px 0 0',  // Add some padding to prevent content from touching the scrollbar
+    };
+    return <div style={{ ...style, ...viewStyle }} {...props} />;
+  };
 
   const handleAnalyze = async () => {
+    setIsAnalyzing(true);
+    setError(null);
+    setDocumentedCode('');
     try {
-      // In the handleAnalyze function, update the axios call:
-      const response = await axios.post('/analyze', { code: inputCode });
+      const response = await axios.post('http://localhost:5000/analyze', { code: inputCode });
       setDocumentedCode(response.data.documented_code);
-      setMetrics({
-        generationTime: response.data.generation_time,
+      setMetrics(prev => ({
+        generationTime: prev.generationTime, // Keep the precise time we measured
         averageTime: response.data.average_time,
         tokenTimeRatio: response.data.token_time_ratio
-      });
-      setError(null);
+      }));
     } catch (err) {
       setError(err.response?.data?.error || 'An error occurred');
+    } finally {
+      setIsAnalyzing(false);
     }
   };
 
+  const formatTime = (time) => {
+    return time.toFixed(2);
+  };
+
   return (
-    <div className="App">
-      <h1>documntr</h1>
-      <div className="code-container">
-        <CodeMirror
-          value={inputCode}
-          height="200px"
-          theme={dracula}
-          extensions={[python()]}
-          onChange={(value) => setInputCode(value)}
-        />
+    <div className={styles.app}>
+      <h1 className={styles.title}>documntr</h1>
+      
+      <div className={styles.metrics}>
+        <div className={styles.metricItem}>
+          <h3>Generation Time</h3>
+          <p>{formatTime(metrics.generationTime)}s</p>
+        </div>
+        <div className={styles.metricItem}>
+          <h3>Average Time</h3>
+          <p>{formatTime(metrics.averageTime)}s</p>
+        </div>
+        <div className={styles.metricItem}>
+          <h3>Token/Time Ratio</h3>
+          <p>{formatTime(metrics.tokenTimeRatio)}</p>
+        </div>
       </div>
-      <button onClick={handleAnalyze}>Analyze</button>
-      {error && <div className="error">{error}</div>}
-      {documentedCode && (
-        <div className="code-container">
-          <h2>Documented Code</h2>
+
+      <div className={styles.codeContainer}>
+        <Scrollbars
+          renderThumbVertical={renderThumb}
+          renderThumbHorizontal={renderThumb}
+          renderTrackVertical={renderTrackVertical}
+          renderTrackHorizontal={renderTrackHorizontal}
+          renderView={renderView}
+          hideTracksWhenNotNeeded={true}
+        >
           <CodeMirror
-            value={documentedCode}
-            height="400px"
+            value={inputCode}
+            height="500px"
             theme={dracula}
             extensions={[python()]}
-            editable={false}
+            onChange={(value) => setInputCode(value)}
           />
-        </div>
-      )}
-      {metrics && (
-        <div className="metrics">
-          <h2>Metrics</h2>
-          <p>Generation Time: {metrics.generationTime.toFixed(2)}s</p>
-          <p>Average Time: {metrics.averageTime.toFixed(2)}s</p>
-          <p>Token/Time Ratio: {metrics.tokenTimeRatio.toFixed(2)}</p>
+        </Scrollbars>
+      </div>
+      
+      <button className={styles.button} onClick={handleAnalyze} disabled={isAnalyzing}>
+        {isAnalyzing ? 'Analyzing...' : 'Analyze'}
+      </button>
+
+      {isAnalyzing && <div className={styles.loader}></div>}
+      
+      {error && <div className={styles.error}>{error}</div>}
+      
+      {documentedCode && (
+        <div className={styles.codeContainer}>
+          <Scrollbars
+            renderThumbVertical={renderThumb}
+            renderThumbHorizontal={renderThumb}
+            renderTrackVertical={renderTrackVertical}
+            renderTrackHorizontal={renderTrackHorizontal}
+            renderView={renderView}
+            hideTracksWhenNotNeeded={true}
+          >
+            <CodeMirror
+              value={documentedCode}
+              height="500px"
+              theme={dracula}
+              extensions={[python()]}
+              editable={false}
+            />
+          </Scrollbars>
         </div>
       )}
     </div>

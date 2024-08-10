@@ -1,24 +1,14 @@
-# Build stage
-FROM node:16 as build
+FROM node:16
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+COPY package*.json ./
 RUN npm ci
 
-# Copy the entire src directory
-COPY src ./src
-# Copy public directory if it exists
-COPY public ./public
+COPY . .
 
-RUN npm run build
+EXPOSE 3000
 
-# Production stage
-FROM nginx:stable-alpine
+ENV CHOKIDAR_USEPOLLING=true
 
-COPY --from=build /app/build /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["npm", "start"]

@@ -1,9 +1,16 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from chatbot import DocChatbot
+import os
 
 app = Flask(__name__)
-CORS(app)  # This allows your React frontend to make requests to this API
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key')  # Use environment variable
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
+
+# Only use DebugToolbarExtension in debug mode
+if app.debug:
+    from flask_debugtoolbar import DebugToolbarExtension
+    toolbar = DebugToolbarExtension(app)
 
 chatbot = DocChatbot()
 
@@ -28,4 +35,4 @@ def analyze_code():
     })
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)

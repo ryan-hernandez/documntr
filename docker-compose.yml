@@ -1,16 +1,26 @@
+version: '3.8'
+
 services:
   backend:
     build: ./backend
     ports:
       - "5000:5000"
+    volumes:
+      - ./backend:/app
     environment:
-      - FLASK_APP=app.py
       - FLASK_ENV=development
+      - SECRET_KEY=your-secret-key-here
       - OPENAI_API_KEY=${OPENAI_API_KEY}
 
   frontend:
     build: ./frontend
     ports:
-      - "80:80"
-    depends_on:
-      - backend
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - WDS_SOCKET_PORT=0
+    stdin_open: true
+    command: npm start
