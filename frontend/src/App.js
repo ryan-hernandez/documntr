@@ -32,6 +32,9 @@ function App() {
     };
   }, []);
 
+  /** 
+   * Updates the timer to calculate the elapsed time while analyzing.
+   */
   const updateTimer = () => {
     if (!isAnalyzingRef.current) {
       return;
@@ -45,6 +48,10 @@ function App() {
     timerRef.current = requestAnimationFrame(updateTimer);
   };
 
+  /** 
+   * Handles the analysis of the input code by sending a request to the server. 
+   * Sets the appropriate metrics and handles any errors that occur during the process.
+   */
   const handleAnalyze = async () => {
     setIsAnalyzing(true);
     isAnalyzingRef.current = true;
@@ -74,6 +81,9 @@ function App() {
     }
   };
 
+  /** 
+   * Saves the current session data to localStorage and resets the metrics to their initial values. 
+   */
   const saveAndResetSession = () => {
     const timestamp = new Date().toISOString();
     const sessionData = JSON.stringify({ timestamp, metrics });

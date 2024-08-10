@@ -2,6 +2,44 @@
 
 This is the frontend for the documntr application, built with React.
 
+## Tech Stack
+
+- React 17.0.2
+- CodeMirror for code editing
+- Axios for API requests
+- React Custom Scrollbars for custom scrolling
+
+## Project Structure
+
+```
+frontend/
+├── public/
+│   └── index.html
+├── src/
+│   ├── components/
+│   │   ├── AnalyzeButton.js
+│   │   ├── CodeEditor.js
+│   │   ├── CustomScrollbars.js
+│   │   ├── ErrorBoundary.js
+│   │   ├── ErrorDisplay.js
+│   │   ├── MetricsDisplay.js
+│   │   └── SessionButton.js
+│   ├── config/
+│   │   └── codeMirrorConfig.js
+│   ├── styles/
+│   │   ├── CodeEditor.module.css
+│   │   ├── MetricsDisplay.module.css
+│   │   ├── scrollbarStyles.js
+│   │   └── SessionButton.module.css
+│   ├── App.js
+│   ├── App.module.css
+│   ├── index.css
+│   └── index.js
+├── package.json
+├── README.md
+└── Dockerfile
+```
+
 ## Setup
 
 1. Navigate to the frontend directory:
@@ -21,26 +59,25 @@ This is the frontend for the documntr application, built with React.
 
 4. Open your browser and navigate to `http://localhost:3000`.
 
-## Project Structure
-
-```
-frontend/
-├── public/
-│   └── index.html
-├── src/
-│   ├── App.js
-│   ├── App.module.css
-│   ├── index.js
-│   └── index.css
-├── package.json
-└── Dockerfile
-```
-
 ## Available Scripts
 
 - `npm start`: Runs the app in development mode.
 - `npm test`: Launches the test runner.
 - `npm run build`: Builds the app for production.
+
+## Linting and Formatting
+
+We use ESLint for linting and Prettier for code formatting. Run linting with:
+
+```
+npm run lint
+```
+
+And format your code with:
+
+```
+npm run format
+```
 
 ## Docker
 
@@ -53,4 +90,4 @@ docker run -p 3000:3000 frontend
 
 ## Contributing
 
-Please ensure that any code you contribute adheres to the existing style and passes all tests.
+Please ensure that any code you contribute adheres to the existing style, passes all tests, and is properly documented. See the main [Contributing Guide](../CONTRIBUTING.md) for more details.

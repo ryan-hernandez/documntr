@@ -1,6 +1,13 @@
 # documntr
 
-documntr is a web application that automatically generates documentation for code using AI. It consists of a React frontend and a Flask backend.
+documntr is an AI-powered web application that automatically generates documentation for code. It utilizes a React frontend and a Flask backend to provide a seamless documentation experience.
+
+## Features
+
+- Automatic code documentation generation using AI
+- Real-time code input and documentation output
+- Performance metrics display
+- Session saving functionality
 
 ## Project Structure
 
@@ -17,14 +24,16 @@ documntr/
 │   ├── requirements.txt
 │   └── Dockerfile
 ├── docker-compose.yml
-└── README.md
+├── README.md
+└── THIRD_PARTY_NOTICES.md
 ```
 
 ## Prerequisites
 
 - Docker and Docker Compose
-- Node.js (for local frontend development)
+- Node.js 16+ (for local frontend development)
 - Python 3.9+ (for local backend development)
+- OpenAI API key
 
 ## Quick Start
 
@@ -34,14 +43,15 @@ documntr/
    cd documntr
    ```
 
-2. Create a `.env` file in the root directory and add your OpenAI API key:
-   ```
-   OPENAI_API_KEY=your_api_key_here
-   ```
-   Alternatively, you can register your key in a local environment variable:
-   ```
-   export OPEN_API_KEY=<your-key-here>
-   ```
+2. Set up your OpenAI API key:
+   - Create a `.env` file in the root directory and add:
+     ```
+     OPENAI_API_KEY=your_api_key_here
+     ```
+   - Or set it as an environment variable:
+     ```
+     export OPENAI_API_KEY=<your-key-here>
+     ```
 
 3. Build and run the Docker containers:
    ```
@@ -57,10 +67,32 @@ For detailed information on developing the frontend and backend, please refer to
 - [Frontend README](./frontend/README.md)
 - [Backend README](./backend/README.md)
 
-## Copyright
+## Testing
 
-© Ryan Hernandez 2024. All rights reserved.
+Run tests for both frontend and backend:
 
-This project and its contents are protected under copyright law. Unauthorized copying, modification, distribution, or use of this project, in whole or in part, is strictly prohibited without the express written permission of the copyright holder.
+```
+docker-compose run frontend npm test
+docker-compose run backend pytest
+```
 
-For inquiries about usage, modification, or distribution of this project, please contact [Ryan](mailto:ryanmichaelhernandez@gmail.com?subject=[GitHub]%20documntr)
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for more details.
+
+## Troubleshooting
+
+Common issues and their solutions:
+
+1. **Docker containers fail to start**: Ensure Docker is running and you have the latest version of Docker and Docker Compose.
+2. **API calls fail**: Check that your OpenAI API key is correctly set in the `.env` file or as an environment variable.
+
+For more issues, please check our [FAQ](FAQ.md) or open an issue on GitHub.
+
+## License
+
+© Ryan Hernandez 2024. All rights reserved. See [LICENSE](LICENSE) for more information.
+
+## Contact
+
+For inquiries, please contact [Ryan](mailto:ryanmichaelhernandez@gmail.com?subject=[GitHub]%20documntr).

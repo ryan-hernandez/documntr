@@ -1,4 +1,10 @@
 /* src/App.module.css */
+
+/**
+ * Styles the main application container.
+ * This class sets the background color, text color, minimum height, padding,
+ * font family, and flexbox layout for the app.
+ */
 .app {
     background-color: #1e1e1e;
     color: #d4d4d4;
@@ -10,12 +16,21 @@
     align-items: center;
 }
 
+/**
+ * Styles the title element.
+ * This class defines the font size, margin, and text alignment for the title.
+ */
 .title {
   font-size: 2.5rem;
   margin-bottom: 2rem;
   text-align: center;
 }
-  
+
+/**
+ * Styles the code container.
+ * This class adds margin, border radius, overflow handling, width, height,
+ * and relative positioning to the code container.
+ */  
 .codeContainer {
   margin-bottom: 2rem;
   border-radius: 10px;
@@ -25,6 +40,12 @@
   position: relative;
 }
 
+/**
+ * Styles the button element.
+ * This class specifies the background color, text color, border, padding, 
+ * font size, border radius, cursor type, hover transition effect, and margins
+ * for buttons.
+ */
 .button {
   background-color: #9499a3;
   color: #282c34;
@@ -38,16 +59,30 @@
   margin: 1rem auto;
 }
 
+/**
+ * Styles the button on hover state.
+ * This class changes the background color of the button when hovered.
+ */
 .button:hover {
   background-color: #3f3f3f;
 }
 
+/**
+ * Styles the button when disabled.
+ * This class adjusts background color, text color, and cursor style 
+ * of the button when it is in a disabled state.
+ */
 .button:disabled {
   background-color: #cccccc;
   color: #666666;
   cursor: not-allowed;
 }
 
+/**
+ * Styles the error message element.
+ * This class sets the background color, text color, padding, border radius,
+ * margin, width, and text alignment for error messages.
+ */
 .error {
   background-color: #ff6b6b;
   color: white;

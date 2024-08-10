@@ -2,6 +2,23 @@
 
 This is the backend for the documntr application, built with Flask.
 
+## Tech Stack
+
+- Flask 2.0.1
+- Flask-CORS for handling Cross-Origin Resource Sharing (CORS)
+- OpenAI API for AI-powered code documentation
+
+## Project Structure
+
+```
+backend/
+├── app.py
+├── chatbot.py
+├── requirements.txt
+├── README.md
+└── Dockerfile
+```
+
 ## Setup
 
 1. Navigate to the backend directory:
@@ -35,19 +52,25 @@ This is the backend for the documntr application, built with Flask.
 
 6. The API will be available at `http://localhost:5000`.
 
-## Project Structure
-
-```
-backend/
-├── app.py
-├── chatbot.py
-├── requirements.txt
-└── Dockerfile
-```
-
 ## API Endpoints
 
 - `POST /analyze`: Analyzes and documents Python code.
+  - Request body: 
+  ```
+  { "code": "your_code_here" }
+  ```
+  - Response: `
+  ```
+  { "documented_code": "...", "generation_time": 0.5, "average_time": 0.6, "total_tokens": 100, "token_time_ratio": 200 }
+  ```
+
+## Testing
+
+Run tests using pytest:
+
+```
+pytest
+```
 
 ## Docker
 
@@ -60,4 +83,4 @@ docker run -p 5000:5000 backend
 
 ## Contributing
 
-Please ensure that any code you contribute adheres to PEP 8 style guidelines and includes appropriate unit tests.
+Please ensure that any code you contribute adheres to PEP 8 style guidelines, passes all tests, and includes appropriate documentation. See the main [Contributing Guide](../CONTRIBUTING.md) for more details.

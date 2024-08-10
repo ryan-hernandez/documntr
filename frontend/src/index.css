@@ -1,6 +1,10 @@
-/* src/index.css */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
+/**
+ * Sets the styles for the body element.
+ * Applies a margin of 0, a font family stack, and text smoothing.
+ * Also sets the background color of the page.
+ */
 body {
   margin: 0;
   font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Oxygen',
@@ -11,6 +15,10 @@ body {
   background-color: #1e1e1e;
 }
 
+/**
+ * Sets the styles for the code element.
+ * Applies a font family stack specifically for code representation.
+ */
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;

@@ -2,13 +2,31 @@ import openai
 import time
 
 class DocChatbot:
+    """A chatbot that analyzes code and suggests documentation based on best practices."""
+    
     def __init__(self):
+        """Initializes the DocChatbot with metrics for tracking performance.
+        
+        Attributes:
+            total_time (float): Total time taken for all generations.
+            num_generations (int): Total number of code generations processed.
+            total_tokens (int): Total number of tokens processed across all generations.
+            current_generation_time (float): Time taken for the current code generation.
+        """
         self.total_time = 0
         self.num_generations = 0
         self.total_tokens = 0
         self.current_generation_time = 0
 
     def analyze_code(self, code):
+        """Analyzes the given code and returns documented code along with performance metrics.
+        
+        Args:
+            code (str): The code to be analyzed.
+
+        Returns:
+            dict: A dictionary containing either an error message or the documented code with performance metrics.
+        """
         if not code:
             return {"error": "Please enter some code to analyze."}
         
@@ -52,6 +70,12 @@ class DocChatbot:
             return {"error": f"An error occurred: {str(e)}"}
 
     def _update_metrics(self, generation_time, tokens):
+        """Updates the internal metrics based on the latest generation's performance.
+        
+        Args:
+            generation_time (float): Time taken for the latest code generation.
+            tokens (int): Number of tokens processed in the latest generation.
+        """
         self.current_generation_time = generation_time
         self.total_time += self.current_generation_time
         self.num_generations += 1

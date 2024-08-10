@@ -16,6 +16,14 @@ chatbot = DocChatbot()
 
 @app.route('/analyze', methods=['POST'])
 def analyze_code():
+    """Analyzes the provided code through the chatbot.
+
+    Receives a JSON payload with the code to be analyzed. If the code 
+    is empty or invalid, an error response is returned. 
+
+    Returns:
+        JSON: A response containing the analysis results or an error message.
+    """
     data = request.json
     code = data.get('code', '')
     
@@ -36,4 +44,11 @@ def analyze_code():
     })
 
 if __name__ == '__main__':
+    """Starts the Flask application.
+
+    Runs the server on the specified host and port, enabling debug mode.
+
+    Returns:
+        None
+    """
     app.run(host='0.0.0.0', port=5000, debug=True)

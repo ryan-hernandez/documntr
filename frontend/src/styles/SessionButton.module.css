@@ -2,6 +2,11 @@
   margin-bottom: 1rem;
 }
 
+/*
+ * Styles for button elements.
+ *
+ * This class defines the appearance and behavior of button elements.
+ */
 .button {
   background-color: #4CAF50;
   border: none;
@@ -17,10 +22,20 @@
   transition: background-color 0.3s;
 }
 
+/*
+ * Styles for the button on hover.
+ *
+ * This class modifies the background color of the button when hovered.
+ */
 .button:hover {
   background-color: #45a049;
 }
 
+/*
+ * Styles for the button when it is active.
+ *
+ * This class changes the background color of the button when it is pressed.
+ */
 .button:active {
   background-color: #3e8e41;
 }

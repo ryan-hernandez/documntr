@@ -1,32 +1,62 @@
 .metrics {
-    background-color: #282c34;
-    padding: 1rem;
-    border-radius: 8px;
-    margin-bottom: 2rem;
-    display: flex;
-    justify-content: space-around;
-    width: 60%;
-  }
-  
-  .metricItem {
-    text-align: center;
-  }
-  
-  .metricItem h3 {
-    margin-bottom: 0.5rem;
-  }
-  
-  .metricItem p {
-    margin: 0;
-    font-size: 1.2rem;
-  }
-  
-  .testSessionIndicator {
-    background-color: #ffa500;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    text-align: center;
-  }
+  /** 
+   * Styles the main metrics container.
+   * 
+   * This container has a dark background, padding, rounded corners, 
+   * and a specified width. It is also designed to display its child 
+   * elements in a flexible container.
+   */
+  background-color: #282c34;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-around;
+  width: 60%;
+}
+
+.metricItem {
+  /** 
+   * Styles each individual metric item.
+   * 
+   * This class centers the text within the metric item.
+   */
+  text-align: center;
+}
+
+.metricItem h3 {
+  /** 
+   * Styles the heading of each metric item.
+   * 
+   * This class sets the margin below the heading to create spacing 
+   * between it and subsequent elements.
+   */
+  margin-bottom: 0.5rem;
+}
+
+.metricItem p {
+  /** 
+   * Styles the paragraph within each metric item.
+   * 
+   * This class removes the default margin and increases the font size 
+   * for better readability.
+   */
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.testSessionIndicator {
+  /** 
+   * Styles the test session indicator label.
+   * 
+   * This class assigns background color, text color, padding, 
+   * and rounded corners to enhance its visual appearance.
+   */
+  background-color: #ffa500;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-align: center;
+}
