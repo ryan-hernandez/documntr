@@ -21,6 +21,10 @@ const MetricsDisplay = ({ metrics }) => (
       <h3>Generations</h3>
       <p>{metrics.numGenerations}</p>
     </div>
+    <div className={styles.metricItem}>
+      <h3>Input Tokens</h3>
+      <p>{metrics.inputTokenCount}</p>
+    </div>
   </div>
 );
 

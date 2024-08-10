@@ -1,5 +1,3 @@
-# app/chatbot.py
-
 import openai
 import time
 
@@ -27,25 +25,28 @@ class DocChatbot:
                                                 Aim for clarity, completeness, and consistency. Try to be as succinct as possible.
                                                 DO NOT ADD ANY MARKDOWN CODE TO YOUR RESPONSE. DO NOT INCLUDE ANY CODE BLOCKS OR BACK TICKS WHATSOEVER.
                                                 Under no circumstances are you to include any flavor text saying that you've updated the code or anything like that, simply output code.
-                                                Take your initial response and ask yourself how you would improve upon that documentation and then respond with the improved documentation after your own reflection."""}
+                                                Take your initial response and ask yourself how you would improve upon that documentation and then respond with the improved documentation after your own reflection. 
+                                                DO NOT INCLUDE YOUR REFLECTION IN THE RESPONSE."""}
             ]
             
             messages.append({"role": "user", "content": f"Analyze the following code:\n\n{code}"})
 
             response = openai.ChatCompletion.create(
-                model="gpt-4",
+                model="gpt-4o-mini",
                 messages=messages
             )
             suggestion = response.choices[0].message['content']
             
             generation_time = time.time() - start_time
-            self._update_metrics(generation_time, len(code.split()))
+            input_tokens = len(code.split())
+            self._update_metrics(generation_time, input_tokens)
 
             return {
                 "documented_code": suggestion,
                 "generation_time": self.current_generation_time,
                 "average_time": self.total_time / self.num_generations,
-                "token_time_ratio": self.total_tokens / self.total_time
+                "total_tokens": input_tokens,
+                "token_time_ratio": input_tokens / self.current_generation_time  # Calculate ratio for this analysis
             }
         except Exception as e:
             return {"error": f"An error occurred: {str(e)}"}
@@ -54,4 +55,4 @@ class DocChatbot:
         self.current_generation_time = generation_time
         self.total_time += self.current_generation_time
         self.num_generations += 1
-        self.total_tokens += tokens
+        self.total_tokens = tokens

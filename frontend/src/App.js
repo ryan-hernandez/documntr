@@ -11,7 +11,13 @@ import SessionButton from './components/SessionButton';
 function App() {
   const [inputCode, setInputCode] = useState('');
   const [documentedCode, setDocumentedCode] = useState('');
-  const [metrics, setMetrics] = useState({ generationTime: 0, averageTime: 0, tokenTimeRatio: 0, numGenerations: 0 });
+  const [metrics, setMetrics] = useState({
+    generationTime: 0,
+    averageTime: 0,
+    tokenTimeRatio: 0,
+    numGenerations: 0,
+    inputTokenCount: 0
+  });
   const [error, setError] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const startTimeRef = useRef(null);
@@ -53,6 +59,7 @@ function App() {
       setMetrics(prev => ({
         generationTime: prev.generationTime,
         averageTime: response.data.average_time,
+        inputTokenCount: response.data.total_tokens,
         tokenTimeRatio: response.data.token_time_ratio,
         numGenerations: prev.numGenerations + 1
       }));
@@ -71,7 +78,13 @@ function App() {
     const timestamp = new Date().toISOString();
     const sessionData = JSON.stringify({ timestamp, metrics });
     localStorage.setItem(`testSession_${timestamp}`, sessionData);
-    setMetrics({ generationTime: 0, averageTime: 0, tokenTimeRatio: 0, numGenerations: 0 });
+    setMetrics({
+      generationTime: 0,
+      averageTime: 0,
+      tokenTimeRatio: 0,
+      numGenerations: 0,
+      inputTokenCount: 0
+    });
   };
 
   return (

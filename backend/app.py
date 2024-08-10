@@ -31,6 +31,7 @@ def analyze_code():
         "documented_code": result["documented_code"],
         "generation_time": result["generation_time"],
         "average_time": result["average_time"],
+        "total_tokens": result["total_tokens"],
         "token_time_ratio": result["token_time_ratio"]
     })
 
