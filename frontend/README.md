@@ -87,7 +87,3 @@ To build and run the frontend in a Docker container:
 docker build -t frontend .
 docker run -p 3000:3000 frontend
 ```
-
-## Contributing
-
-Please ensure that any code you contribute adheres to the existing style, passes all tests, and is properly documented. See the main [Contributing Guide](../CONTRIBUTING.md) for more details.

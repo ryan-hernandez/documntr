@@ -87,11 +87,11 @@ Common issues and their solutions:
 1. **Docker containers fail to start**: Ensure Docker is running and you have the latest version of Docker and Docker Compose.
 2. **API calls fail**: Check that your OpenAI API key is correctly set in the `.env` file or as an environment variable.
 
-For more issues, please check our [FAQ](FAQ.md) or open an issue on GitHub.
+For code issues, please open an issue on GitHub.
 
 ## License
 
-© Ryan Hernandez 2024. All rights reserved. See [LICENSE](LICENSE) for more information.
+© Ryan Hernandez 2024. All rights reserved.
 
 ## Contact
 

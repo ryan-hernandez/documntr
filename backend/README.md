@@ -80,7 +80,3 @@ To build and run the backend in a Docker container:
 docker build -t backend .
 docker run -p 5000:5000 backend
 ```
-
-## Contributing
-
-Please ensure that any code you contribute adheres to PEP 8 style guidelines, passes all tests, and includes appropriate documentation. See the main [Contributing Guide](../CONTRIBUTING.md) for more details.
