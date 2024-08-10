@@ -6,6 +6,7 @@ import CodeEditor from './components/CodeEditor';
 import AnalyzeButton from './components/AnalyzeButton';
 import ErrorDisplay from './components/ErrorDisplay';
 import ErrorBoundary from './components/ErrorBoundary';
+import SessionButton from './components/SessionButton';
 
 function App() {
   const [inputCode, setInputCode] = useState('');
@@ -59,7 +60,6 @@ function App() {
       setError(err.response?.data?.error || 'An error occurred');
     } finally {
       setIsAnalyzing(false);
-      setInputCode('')
       isAnalyzingRef.current = false;
       if (timerRef.current) {
         cancelAnimationFrame(timerRef.current);
@@ -67,11 +67,20 @@ function App() {
     }
   };
 
+  const saveAndResetSession = () => {
+    const timestamp = new Date().toISOString();
+    const sessionData = JSON.stringify({ timestamp, metrics });
+    localStorage.setItem(`testSession_${timestamp}`, sessionData);
+    setMetrics({ generationTime: 0, averageTime: 0, tokenTimeRatio: 0, numGenerations: 0 });
+  };
+
   return (
     <ErrorBoundary>
       <div className={styles.app}>
         <h1 className={styles.title}>documntr</h1>
         
+        <SessionButton onSaveSession={saveAndResetSession} />
+
         <MetricsDisplay metrics={metrics} />
 
         <CodeEditor
@@ -90,7 +99,8 @@ function App() {
             value={documentedCode}
             onChange={() => {}}
             label="Documented Code"
-            readOnly
+            readOnly={true}
+            disabled={false}
           />
         )}
       </div>

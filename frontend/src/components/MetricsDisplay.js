@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../App.module.css';
+import styles from '../styles/MetricsDisplay.module.css';
 
 const formatTime = (time) => time.toFixed(2);
 
