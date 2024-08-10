@@ -63,4 +63,4 @@ For detailed information on developing the frontend and backend, please refer to
 
 This project and its contents are protected under copyright law. Unauthorized copying, modification, distribution, or use of this project, in whole or in part, is strictly prohibited without the express written permission of the copyright holder.
 
-For inquiries about usage, modification, or distribution of this project, please contact [Your Contact Information].
+For inquiries about usage, modification, or distribution of this project, please contact [Ryan](mailto:ryanmichaelhernandez@gmail.com?subject=[GitHub]%20documntr)
