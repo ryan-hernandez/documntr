@@ -1,28 +1,35 @@
 import React from 'react';
 import CodeMirror from '@uiw/react-codemirror';
-import { python } from '@codemirror/lang-python';
-import { dracula } from '@uiw/codemirror-theme-dracula';
 import { codeMirrorSetup } from '../config/codeMirrorConfig';
+import { languageOptions, getLanguageExtension } from '../config/languageOptions';
+import { customDraculaTheme } from '../config/customDraculaTheme';
 import styles from '../styles/CodeEditor.module.css';
 import CopyButton from './CopyButton';
 
-/**
- * A functional component that renders a code editor with optional read-only and disabled states.
- * 
- * @param {Object} props - The props for the component.
- * @param {string} props.value - The current code value in the editor.
- * @param {Function} props.onChange - The function to call when the code changes.
- * @param {string} props.label - The label displayed above the code editor.
- * @param {boolean} [props.readOnly=false] - Indicates if the editor should be read-only.
- * @param {boolean} [props.disabled=false] - Indicates if the editor is disabled.
- * @returns {JSX.Element} The rendered code editor component.
- */
-const CodeEditor = ({ value, onChange, label, readOnly = false, disabled = false }) => {
+const CodeEditor = ({ value, onChange, label, readOnly = false, disabled = false, language, onLanguageChange }) => {
+  const handleLanguageChange = (event) => {
+    onLanguageChange(event.target.value);
+  };
+
   return (
     <div className={styles.codeContainer}>
       <div className={styles.codeHeader}>
         <h3>{label}</h3>
-        <div className={styles.copyButtonContainer}>
+        <div className={styles.headerControls}>
+          {!readOnly && (
+            <select
+              className={styles.languageSelect}
+              value={language}
+              onChange={handleLanguageChange}
+              disabled={disabled}
+            >
+              {languageOptions.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          )}
           {readOnly && <CopyButton text={value} />}
         </div>
       </div>
@@ -30,15 +37,14 @@ const CodeEditor = ({ value, onChange, label, readOnly = false, disabled = false
         <CodeMirror
           value={value}
           height="100%"
-          theme={dracula}
-          extensions={[python()]}
+          theme={customDraculaTheme}
+          extensions={[getLanguageExtension(language)()]}
           onChange={onChange}
           editable={!readOnly && !disabled}
           basicSetup={{
             ...codeMirrorSetup,
             scrollbarStyle: 'native'
           }}
-          style={{ fontFamily: "'Source Code Pro', monospace" }}
         />
         {disabled && <div className={styles.overlay}></div>}
       </div>

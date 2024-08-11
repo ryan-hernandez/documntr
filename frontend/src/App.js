@@ -7,10 +7,12 @@ import AnalyzeButton from './components/AnalyzeButton';
 import ErrorDisplay from './components/ErrorDisplay';
 import ErrorBoundary from './components/ErrorBoundary';
 import SessionButton from './components/SessionButton';
+import { languageOptions } from './config/languageOptions';
 
 function App() {
   const [inputCode, setInputCode] = useState('');
   const [documentedCode, setDocumentedCode] = useState('');
+  const [selectedLanguage, setSelectedLanguage] = useState(languageOptions[0].value);
   const [metrics, setMetrics] = useState({
     generationTime: 0,
     averageTime: 0,
@@ -63,7 +65,7 @@ function App() {
     updateTimer();
 
     try {
-      const response = await axios.post('http://localhost:5000/analyze', { code: inputCode });
+      const response = await axios.post('http://localhost:5000/analyze', { code: inputCode, language: selectedLanguage });
       setDocumentedCode(response.data.documented_code);
       setMetrics(prev => ({
         generationTime: prev.generationTime,
@@ -114,6 +116,8 @@ function App() {
           onChange={setInputCode}
           label="Input Code"
           disabled={isAnalyzing}
+          language={selectedLanguage}
+          onLanguageChange={setSelectedLanguage}
         />
         
         <AnalyzeButton onClick={handleAnalyze} isAnalyzing={isAnalyzing} />
@@ -127,6 +131,8 @@ function App() {
             label="Documented Code"
             readOnly={true}
             disabled={false}
+            language={selectedLanguage}
+            onLanguageChange={() => {}} // This won't be used for the read-only editor
           />
         )}
       </div>
