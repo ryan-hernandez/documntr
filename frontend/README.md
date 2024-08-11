@@ -19,7 +19,6 @@ frontend/
 │   ├── components/
 │   │   ├── AnalyzeButton.js
 │   │   ├── CodeEditor.js
-│   │   ├── CustomScrollbars.js
 │   │   ├── ErrorBoundary.js
 │   │   ├── ErrorDisplay.js
 │   │   ├── MetricsDisplay.js

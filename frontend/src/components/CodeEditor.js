@@ -2,7 +2,6 @@ import React from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { python } from '@codemirror/lang-python';
 import { dracula } from '@uiw/codemirror-theme-dracula';
-import CustomScrollbars from './CustomScrollbars';
 import { codeMirrorSetup } from '../config/codeMirrorConfig';
 import styles from '../styles/CodeEditor.module.css';
 import CopyButton from './CopyButton';

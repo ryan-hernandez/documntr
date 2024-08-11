@@ -34,6 +34,7 @@ function App() {
 
   /** 
    * Updates the timer to calculate the elapsed time while analyzing.
+   * @returns {void}
    */
   const updateTimer = () => {
     if (!isAnalyzingRef.current) {
@@ -51,6 +52,7 @@ function App() {
   /** 
    * Handles the analysis of the input code by sending a request to the server. 
    * Sets the appropriate metrics and handles any errors that occur during the process.
+   * @returns {Promise<void>}
    */
   const handleAnalyze = async () => {
     setIsAnalyzing(true);
@@ -82,7 +84,8 @@ function App() {
   };
 
   /** 
-   * Saves the current session data to localStorage and resets the metrics to their initial values. 
+   * Saves the current session data to localStorage and resets the metrics to their initial values.
+   * @returns {void}
    */
   const saveAndResetSession = () => {
     const timestamp = new Date().toISOString();
