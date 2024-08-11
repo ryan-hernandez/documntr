@@ -1,28 +1,36 @@
 .copyButton {
-    background: transparent;
+    background: rgba(255, 255, 255, 0.1);
     border: none;
-    padding: 0;
-    width: 24px;
-    height: 24px;
+    border-radius: 4px;
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: all 0.3s ease;
     position: relative;
-  }
-  
-  .copyButton:hover {
+    margin-left: 8px;
+}
+
+/**
+ * @description Styles for the hover state of the copy button.
+ */
+.copyButton:hover {
+    background: rgba(255, 255, 255, 0.2);
     z-index: 1000;
-  }
-  
-  .copyIcon {
+}
+
+.copyIcon {
     width: 16px;
     height: 16px;
-    color: #e2e4e7;
-  }
-  
-  .tooltipText {
+    color: #ffffff;
+}
+
+/**
+ * @description Styles for tooltip text displayed on hover.
+ */
+.tooltipText {
     position: absolute;
     top: 100%;
     right: 50%;
@@ -36,11 +44,13 @@
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
-    z-index: 1000;
-  }
-  
-  .copyButton:hover .tooltipText {
+}
+
+/**
+ * @description Styles for the tooltip when the copy button is hovered.
+ */
+.copyButton:hover .tooltipText {
     opacity: 1;
     visibility: visible;
     top: calc(100% + 5px);
-  }
+}

@@ -9,8 +9,9 @@ export const scrollbarStyles = {
    */
   renderThumb: ({ style, ...props }) => {
     const thumbStyle = {
+      backgroundColor: 'rgba(255, 255, 255, 0.2)',
       borderRadius: '4px',
-      backgroundColor: '#888',
+      cursor: 'pointer',
     };
     return <div style={{ ...style, ...thumbStyle }} {...props} />;
   },
@@ -25,12 +26,12 @@ export const scrollbarStyles = {
    */
   renderTrackVertical: ({ style, ...props }) => {
     const trackStyle = {
-      backgroundColor: '#333',
-      borderRadius: '4px',
+      backgroundColor: 'transparent',
       right: 2,
       bottom: 2,
       top: 2,
-      width: '10px',
+      borderRadius: '4px',
+      width: '8px',
     };
     return <div style={{ ...style, ...trackStyle }} {...props} />;
   },
@@ -45,12 +46,12 @@ export const scrollbarStyles = {
    */
   renderTrackHorizontal: ({ style, ...props }) => {
     const trackStyle = {
-      backgroundColor: '#333',
-      borderRadius: '4px',
+      backgroundColor: 'transparent',
       left: 2,
       right: 2,
       bottom: 2,
-      height: '10px',
+      borderRadius: '4px',
+      height: '8px',
     };
     return <div style={{ ...style, ...trackStyle }} {...props} />;
   },
@@ -65,7 +66,7 @@ export const scrollbarStyles = {
    */
   renderView: ({ style, ...props }) => {
     const viewStyle = {
-      padding: '0 16px 0 0',
+      padding: '0 8px 0 0',
     };
     return <div style={{ ...style, ...viewStyle }} {...props} />;
   },
