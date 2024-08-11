@@ -17,17 +17,48 @@ documntr is an AI-powered web application that automatically generates documenta
 documntr/
 ├── frontend/
 │   ├── public/
+│   │   └── index.html
 │   ├── src/
+│   │   ├── components/
+│   │   │   ├── AnalyzeButton.js
+│   │   │   ├── CodeEditor.js
+│   │   │   ├── CopyButton.js
+│   │   │   ├── CustomScrollbars.js
+│   │   │   ├── ErrorBoundary.js
+│   │   │   ├── ErrorDisplay.js
+│   │   │   ├── MetricsDisplay.js
+│   │   │   └── SessionButton.js
+│   │   ├── config/
+│   │   │   ├── codeMirrorConfig.js
+│   │   │   ├── customDraculaTheme.js
+│   │   │   └── languageOptions.js
+│   │   ├── styles/
+│   │   │   ├── AnalyzeButton.module.css
+│   │   │   ├── CodeEditor.module.css
+│   │   │   ├── CopyButton.module.css
+│   │   │   ├── MetricsDisplay.module.css
+│   │   │   ├── SessionButton.module.css
+│   │   │   └── scrollbarStyles.js
+│   │   ├── App.js
+│   │   ├── App.module.css
+│   │   ├── index.css
+│   │   └── index.js
+│   ├── .env
 │   ├── package.json
+│   ├── README.md
 │   └── Dockerfile
 ├── backend/
 │   ├── app.py
 │   ├── chatbot.py
+│   ├── README.md
 │   ├── requirements.txt
 │   └── Dockerfile
 ├── docker-compose.yml
-├── README.md
-└── THIRD_PARTY_NOTICES.md
+├── .dockerignore
+├── .gitattributes
+├── .gitignore
+├── THIRD_PARTY_NOTICES.md
+└── README.md
 ```
 
 ## Prerequisites
