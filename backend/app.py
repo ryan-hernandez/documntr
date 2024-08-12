@@ -1,11 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from chatbot import DocChatbot
-import os
-
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-from chatbot import DocChatbot
+from documntr import Documntr  # Updated import statement
 import os
 
 app = Flask(__name__)
@@ -20,11 +15,11 @@ if os.environ.get('FLASK_DEBUG') == '1':
     except ImportError:
         print("DebugToolbarExtension not available. Skipping.")
 
-chatbot = DocChatbot()
+documntr_instance = Documntr()  # Changed variable name to avoid conflict
 
 @app.route('/analyze', methods=['POST'])
 def analyze_code():
-    """Analyzes the provided code through the chatbot.
+    """Analyzes the provided code through the Documntr.
 
     Receives a JSON payload with the code to be analyzed. If the code 
     is empty or invalid, an error response is returned. 
@@ -38,7 +33,7 @@ def analyze_code():
     if not code.strip():
         return jsonify({"error": "Please enter some code to analyze."}), 400
     
-    result = chatbot.analyze_code(code)
+    result = documntr_instance.analyze_code(code)
     
     if "error" in result:
         return jsonify({"error": result["error"]}), 500
@@ -52,11 +47,4 @@ def analyze_code():
     })
 
 if __name__ == '__main__':
-    """Starts the Flask application.
-
-    Runs the server on the specified host and port, enabling debug mode.
-
-    Returns:
-        None
-    """
     app.run(host='0.0.0.0', port=5000, debug=os.environ.get('FLASK_DEBUG') == '1')

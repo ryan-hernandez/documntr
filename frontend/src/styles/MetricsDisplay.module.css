@@ -33,7 +33,10 @@
   font-weight: 500;
 }
 
-/* Styles for responsive design */
+/**
+ * Media query for responsive design.
+ * Adjusts the layout for screens smaller than 768px.
+ */
 @media (max-width: 768px) {
   .metricsContainer {
     flex-direction: column;

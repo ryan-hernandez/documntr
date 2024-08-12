@@ -15,30 +15,39 @@
     font-weight: 500;
     letter-spacing: 0.5px;
     font-family: 'Source Code Pro', monospace;
-  }
-  
-  .analyzeButton:hover {
+}
+
+.analyzeButton:hover {
     background-color: rgba(60, 64, 72, 0.7);
-  }
-  
-  .analyzeButton:disabled {
+}
+
+.analyzeButton:disabled {
     background-color: rgba(40, 44, 52, 0.4);
     cursor: not-allowed;
-  }
-  
-  .buttonText {
+}
+
+/**
+ * Styles for button text within the analyze button.
+ */
+.buttonText {
     margin-right: 8px;
-  }
-  
-  .spinner {
+}
+
+/**
+ * Styles for the spinner used in loading states.
+ */
+.spinner {
     width: 16px;
     height: 16px;
     border: 2px solid rgba(255, 255, 255, 0.3);
     border-radius: 50%;
     border-top-color: #fff;
     animation: spin 1s ease-in-out infinite;
-  }
-  
-  @keyframes spin {
+}
+
+/**
+ * Animation keyframes for the spinner rotation effect.
+ */
+@keyframes spin {
     to { transform: rotate(360deg); }
-  }
+}

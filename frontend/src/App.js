@@ -9,6 +9,12 @@ import ErrorBoundary from './components/ErrorBoundary';
 import SessionButton from './components/SessionButton';
 import { languageOptions } from './config/languageOptions';
 
+/**
+ * The main application component that handles code analysis,
+ * metrics display, and session management.
+ *
+ * @returns {JSX.Element} The rendered component.
+ */
 function App() {
   const [inputCode, setInputCode] = useState('');
   const [documentedCode, setDocumentedCode] = useState('');
@@ -26,6 +32,9 @@ function App() {
   const timerRef = useRef(null);
   const isAnalyzingRef = useRef(false);
 
+  /**
+   * Effect hook for cleaning up the timer on component unmount.
+   */
   useEffect(() => {
     return () => {
       if (timerRef.current) {
@@ -34,9 +43,8 @@ function App() {
     };
   }, []);
 
-  /** 
-   * Updates the timer to calculate the elapsed time while analyzing.
-   * @returns {void}
+  /**
+   * Updates the metrics timer while analyzing the code.
    */
   const updateTimer = () => {
     if (!isAnalyzingRef.current) {
@@ -51,10 +59,11 @@ function App() {
     timerRef.current = requestAnimationFrame(updateTimer);
   };
 
-  /** 
-   * Handles the analysis of the input code by sending a request to the server. 
-   * Sets the appropriate metrics and handles any errors that occur during the process.
-   * @returns {Promise<void>}
+  /**
+   * Handles the code analysis by sending the input code to
+   * the backend and updating the state with the results.
+   *
+   * @returns {Promise<void>} A promise that resolves when analysis is complete.
    */
   const handleAnalyze = async () => {
     setIsAnalyzing(true);
@@ -85,9 +94,8 @@ function App() {
     }
   };
 
-  /** 
-   * Saves the current session data to localStorage and resets the metrics to their initial values.
-   * @returns {void}
+  /**
+   * Saves the current session metrics to local storage and resets the metrics.
    */
   const saveAndResetSession = () => {
     const timestamp = new Date().toISOString();

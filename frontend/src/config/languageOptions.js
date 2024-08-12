@@ -13,6 +13,12 @@ import { html } from '@codemirror/lang-html'
 import { yaml } from '@codemirror/lang-yaml'
 import { csharp } from '@replit/codemirror-lang-csharp'
 
+/**
+ * An array of programming language options available for the editor.
+ * Each option contains a value, label, and associated language extension.
+ * 
+ * @type {Array<{value: string, label: string, extension: any}>}
+ */
 export const languageOptions = [
   { value: 'python', label: 'Python', extension: python },
   { value: 'javascript', label: 'JavaScript', extension: javascript },
@@ -32,6 +38,12 @@ export const languageOptions = [
   { value: 'yaml', label: 'YAML', extension: yaml },
 ]
 
+/**
+ * Retrieves the language extension corresponding to the given language value.
+ *
+ * @param {string} value - The value representing the programming language.
+ * @returns {any} The associated language extension, or the Python extension if not found.
+ */
 export const getLanguageExtension = (value) => {
   const language = languageOptions.find(lang => lang.value === value);
   return language ? language.extension : python;
