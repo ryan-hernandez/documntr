@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../styles/SessionButton.module.css';
+import styles from './styles/SessionButton.module.css';
 
 /**
  * Renders a button for saving the current session.

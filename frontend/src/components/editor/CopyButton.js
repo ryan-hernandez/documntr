@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styles from '../styles/CopyButton.module.css';
+import styles from './styles/CopyButton.module.css';
 
 /**
  * CopyButton component that allows the user to copy provided text to the clipboard.

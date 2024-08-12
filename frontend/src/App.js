@@ -1,13 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import styles from './App.module.css';
-import MetricsDisplay from './components/MetricsDisplay';
-import CodeEditor from './components/CodeEditor';
+import MetricsDisplay from './components/metrics/MetricsDisplay';
+import CodeEditor from './components/editor/CodeEditor';
 import AnalyzeButton from './components/AnalyzeButton';
 import ErrorDisplay from './components/ErrorDisplay';
 import ErrorBoundary from './components/ErrorBoundary';
-import SessionButton from './components/SessionButton';
-import { languageOptions } from './config/languageOptions';
+import SessionButton from './components/metrics/SessionButton';
+import { languageOptions } from './components/editor/utils/languageOptions';
 
 /**
  * The main application component that handles code analysis,
