@@ -1,21 +1,24 @@
-import React from 'react';
-import styles from './styles/CodeEditor.module.css';
+import React, { forwardRef } from 'react';
 import CodeMirrorWrapper from './CodeMirrorWrapper';
 import EditorHeader from './EditorHeader';
+import styles from './styles/CodeEditor.module.css';
 
 /**
- * CodeEditor component that provides an editable code environment with a header and a code mirror.
+ * CodeEditor component that renders a code editor with a header.
  * 
- * @param {string} value - The content of the code editor.
- * @param {function} onChange - Callback function to handle changes in the editor's content.
- * @param {string} label - Label to display in the editor header.
- * @param {boolean} [readOnly=false] - Determines if the editor is in read-only mode.
- * @param {boolean} [disabled=false] - Determines if the editor is disabled.
- * @param {string} language - The programming language of the code editor.
- * @param {function} onLanguageChange - Callback function to handle changes in the programming language.
- * @returns {JSX.Element} The rendered CodeEditor component.
+ * @param {Object} props - The properties passed to the component.
+ * @param {string} props.value - The current value of the code editor.
+ * @param {function} props.onChange - Callback function triggered when the value changes.
+ * @param {string} props.label - The label displayed in the editor header.
+ * @param {boolean} [props.readOnly=false] - Indicates if the editor is read-only.
+ * @param {boolean} [props.disabled=false] - Indicates if the editor is disabled.
+ * @param {string} props.language - The programming language for syntax highlighting.
+ * @param {function} props.onLanguageChange - Callback function triggered when the language changes.
+ * @param {React.Ref} ref - The ref forwarded to the CodeMirrorWrapper.
+ * 
+ * @return {JSX.Element} The rendered component.
  */
-const CodeEditor = ({ value, onChange, label, readOnly = false, disabled = false, language, onLanguageChange }) => {
+const CodeEditor = forwardRef(({ value, onChange, label, readOnly = false, disabled = false, language, onLanguageChange }, ref) => {
   return (
     <div className={styles.codeContainer}>
       <EditorHeader 
@@ -32,9 +35,10 @@ const CodeEditor = ({ value, onChange, label, readOnly = false, disabled = false
         readOnly={readOnly}
         disabled={disabled}
         language={language}
+        ref={ref}
       />
     </div>
   );
-};
+});
 
 export default CodeEditor;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { customDraculaTheme } from './config/themes/customDraculaTheme';
 import { getLanguageExtension } from './utils/languageOptions';
@@ -6,17 +6,19 @@ import { codeMirrorSetup } from './config/codeMirrorConfig';
 import styles from './styles/CodeEditor.module.css';
 
 /**
- * CodeMirrorWrapper component for rendering a CodeMirror editor.
+ * A wrapper component for the CodeMirror editor that handles various props 
+ * including value, change handling, read-only mode, disabled state, and language.
  *
- * @param {Object} props - The component props.
+ * @param {Object} props - The component properties.
  * @param {string} props.value - The current value of the editor.
- * @param {Function} props.onChange - Callback function that is called when the content is changed.
- * @param {boolean} props.readOnly - Indicates if the editor is read-only.
+ * @param {function} props.onChange - Callback function triggered on value change.
+ * @param {boolean} props.readOnly - Indicates if the editor is in read-only mode.
  * @param {boolean} props.disabled - Indicates if the editor is disabled.
- * @param {string} props.language - The language for syntax highlighting.
- * @returns {JSX.Element} The rendered CodeMirror editor component.
+ * @param {string} props.language - The programming language for syntax highlighting.
+ * @param {React.Ref} ref - The ref to be forwarded to the CodeMirror component.
+ * @returns {JSX.Element} The rendered CodeMirror wrapper component.
  */
-const CodeMirrorWrapper = ({ value, onChange, readOnly, disabled, language }) => {
+const CodeMirrorWrapper = forwardRef(({ value, onChange, readOnly, disabled, language }, ref) => {
   return (
     <div className={styles.editorWrapper}>
       <CodeMirror
@@ -30,10 +32,11 @@ const CodeMirrorWrapper = ({ value, onChange, readOnly, disabled, language }) =>
           ...codeMirrorSetup,
           scrollbarStyle: 'native'
         }}
+        ref={ref}
       />
       {disabled && <div className={styles.overlay}></div>}
     </div>
   );
-};
+});
 
 export default CodeMirrorWrapper;

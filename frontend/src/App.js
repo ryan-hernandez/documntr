@@ -31,17 +31,36 @@ function App() {
   const startTimeRef = useRef(null);
   const timerRef = useRef(null);
   const isAnalyzingRef = useRef(false);
+  const inputEditorRef = useRef(null);
+
+  /**
+   * Handles the key press event for initiating code analysis.
+   * 
+   * @param {KeyboardEvent} event - The keyboard event triggered when a key is pressed.
+   */
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter' && event.shiftKey && !isAnalyzing) {
+      event.preventDefault();
+      if (inputEditorRef.current && inputEditorRef.current.view) {
+        const editorView = inputEditorRef.current.view;
+        const editorState = editorView.state;
+        const currentContent = editorState.doc.toString();
+        console.log("Current content:", currentContent);
+        setInputCode(currentContent);
+        handleAnalyze(currentContent);
+      }
+    }
+  };
 
   /**
    * Effect hook to clean up the animation frame on component unmount.
    */
   useEffect(() => {
+    document.addEventListener('keydown', handleKeyPress);
     return () => {
-      if (timerRef.current) {
-        cancelAnimationFrame(timerRef.current);
-      }
+      document.removeEventListener('keydown', handleKeyPress);
     };
-  }, []);
+  }, [isAnalyzing]);
 
   /**
    * Updates the timer by calculating the elapsed time and adjusting metrics accordingly.
@@ -64,9 +83,15 @@ function App() {
    * Handles the analysis of the input code by making an API request
    * to retrieve the documented code and updates metrics.
    * 
+   * @param {string} codeToAnalyze - The code to be analyzed.
    * @returns {Promise<void>} A promise that resolves when the analysis is complete.
    */
-  const handleAnalyze = async () => {
+  const handleAnalyze = async (codeToAnalyze) => {
+    if (!codeToAnalyze || !codeToAnalyze.trim()) {
+      setError("Please enter some code before analyzing.");
+      return;
+    }
+
     setIsAnalyzing(true);
     isAnalyzingRef.current = true;
     setError(null);
@@ -75,17 +100,30 @@ function App() {
     updateTimer();
 
     try {
-      const response = await axios.post('http://localhost:5000/analyze', { code: inputCode, language: selectedLanguage });
-      setDocumentedCode(response.data.documented_code);
-      setMetrics(prev => ({
-        generationTime: prev.generationTime,
-        averageTime: response.data.average_time,
-        inputTokenCount: response.data.total_tokens,
-        tokenTimeRatio: response.data.token_time_ratio,
-        numGenerations: prev.numGenerations + 1
-      }));
+      console.log("Sending code for analysis:", codeToAnalyze);
+      const response = await axios.post('http://localhost:5000/analyze', 
+        { code: codeToAnalyze, language: selectedLanguage },
+        { 
+          headers: { 'Content-Type': 'application/json' },
+          timeout: 30000 // 30 seconds timeout
+        }
+      );
+      
+      if (response.data && response.data.documented_code) {
+        setDocumentedCode(response.data.documented_code);
+        setMetrics(prev => ({
+          generationTime: prev.generationTime,
+          averageTime: response.data.average_time,
+          inputTokenCount: response.data.total_tokens,
+          tokenTimeRatio: response.data.token_time_ratio,
+          numGenerations: prev.numGenerations + 1
+        }));
+      } else {
+        throw new Error('Invalid response from server');
+      }
     } catch (err) {
-      setError(err.response?.data?.error || 'An error occurred');
+      console.error('Analysis error:', err);
+      setError(err.response?.data?.error || err.message || 'An error occurred during analysis');
     } finally {
       setIsAnalyzing(false);
       isAnalyzingRef.current = false;
@@ -130,6 +168,7 @@ function App() {
               disabled={isAnalyzing}
               language={selectedLanguage}
               onLanguageChange={setSelectedLanguage}
+              ref={inputEditorRef}
             />
           </div>
           
@@ -153,7 +192,9 @@ function App() {
         </div>
         
         <AnalyzeButton onClick={handleAnalyze} isAnalyzing={isAnalyzing} />
-
+        <span className={styles.analyzeDescriptor}>
+          shift+enter
+        </span>
         {error && <ErrorDisplay error={error} />}
       </div>
     </ErrorBoundary>
