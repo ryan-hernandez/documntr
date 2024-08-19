@@ -1,11 +1,5 @@
-/* src/App.module.css */
-
-/**
- * Styles the main application container.
- * This class sets the background color, text color, minimum height, padding,
- * font family, and flexbox layout for the app.
- */
- .app {
+.app {
+  /* Main application container style */
   background-color: #1e1e1e;
   color: #d4d4d4;
   min-height: 100vh;
@@ -16,37 +10,40 @@
   align-items: center;
 }
 
-/**
- * Styles the title element.
- * This class defines the font size, margin, and text alignment for the title.
- */
 .title {
+  /* Style for the main title */
   font-size: 2.5rem;
   margin-bottom: 2rem;
   text-align: center;
 }
 
-/**
- * Styles the code container.
- * This class adds margin, border radius, overflow handling, width, height,
- * and relative positioning to the code container.
- */  
-.codeContainer {
+.editorsContainer {
+  /* Container for the editors */
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
   margin-bottom: 2rem;
-  border-radius: 10px;
-  overflow: hidden;
-  width: 60%;
-  height: 500px;
-  position: relative;
 }
 
-/**
- * Styles the button element.
- * This class specifies the background color, text color, border, padding, 
- * font size, border radius, cursor type, hover transition effect, and margins
- * for buttons.
- */
+.editorWrapper {
+  /* Wrapper for each editor */
+  width: 49%;
+}
+
+.placeholderEditor {
+  /* Placeholder editor style */
+  height: 500px;
+  background-color: #282a36;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #6272a4;
+  font-style: italic;
+}
+
 .button {
+  /* Button style */
   background-color: #f6f8fa;
   color: #282c34;
   border: none;
@@ -59,31 +56,20 @@
   margin: 1rem auto;
 }
 
-/**
- * Styles the button on hover state.
- * This class changes the background color of the button when hovered.
- */
 .button:hover {
+  /* Hover effect for button */
   background-color: #3f3f3f;
 }
 
-/**
- * Styles the button when disabled.
- * This class adjusts background color, text color, and cursor style 
- * of the button when it is in a disabled state.
- */
 .button:disabled {
+  /* Disabled button style */
   background-color: #cccccc;
   color: #666666;
   cursor: not-allowed;
 }
 
-/**
- * Styles the error message element.
- * This class sets the background color, text color, padding, border radius,
- * margin, width, and text alignment for error messages.
- */
 .error {
+  /* Style for error messages */
   background-color: #ff6b6b;
   color: white;
   padding: 1rem;
@@ -91,4 +77,18 @@
   margin-bottom: 1rem;
   width: 60%;
   text-align: center;
+}
+
+/* Media query for smaller screens */
+@media (max-width: 1200px) {
+  .editorsContainer {
+    /* Change editor container layout on smaller screens */
+    flex-direction: column;
+  }
+
+  .editorWrapper {
+    /* Update editor wrapper style for smaller screens */
+    width: 100%;
+    margin-bottom: 2rem;
+  }
 }

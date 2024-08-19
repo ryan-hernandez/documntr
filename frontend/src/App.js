@@ -10,10 +10,10 @@ import SessionButton from './components/metrics/SessionButton';
 import { languageOptions } from './components/editor/utils/languageOptions';
 
 /**
- * The main application component that handles code analysis,
- * metrics display, and session management.
- *
- * @returns {JSX.Element} The rendered component.
+ * App component that manages the code analysis functionality.
+ * It allows users to input code, analyze it, and view the documented results.
+ * 
+ * @returns {JSX.Element} The rendered App component.
  */
 function App() {
   const [inputCode, setInputCode] = useState('');
@@ -33,7 +33,7 @@ function App() {
   const isAnalyzingRef = useRef(false);
 
   /**
-   * Effect hook for cleaning up the timer on component unmount.
+   * Effect hook to clean up the animation frame on component unmount.
    */
   useEffect(() => {
     return () => {
@@ -44,7 +44,8 @@ function App() {
   }, []);
 
   /**
-   * Updates the metrics timer while analyzing the code.
+   * Updates the timer by calculating the elapsed time and adjusting metrics accordingly.
+   * This function is called recursively using requestAnimationFrame.
    */
   const updateTimer = () => {
     if (!isAnalyzingRef.current) {
@@ -60,10 +61,10 @@ function App() {
   };
 
   /**
-   * Handles the code analysis by sending the input code to
-   * the backend and updating the state with the results.
-   *
-   * @returns {Promise<void>} A promise that resolves when analysis is complete.
+   * Handles the analysis of the input code by making an API request
+   * to retrieve the documented code and updates metrics.
+   * 
+   * @returns {Promise<void>} A promise that resolves when the analysis is complete.
    */
   const handleAnalyze = async () => {
     setIsAnalyzing(true);
@@ -95,7 +96,8 @@ function App() {
   };
 
   /**
-   * Saves the current session metrics to local storage and resets the metrics.
+   * Saves the current session metrics to local storage
+   * and resets the metrics to their initial state.
    */
   const saveAndResetSession = () => {
     const timestamp = new Date().toISOString();
@@ -119,30 +121,40 @@ function App() {
 
         <MetricsDisplay metrics={metrics} />
 
-        <CodeEditor
-          value={inputCode}
-          onChange={setInputCode}
-          label="Input Code"
-          disabled={isAnalyzing}
-          language={selectedLanguage}
-          onLanguageChange={setSelectedLanguage}
-        />
+        <div className={styles.editorsContainer}>
+          <div className={styles.editorWrapper}>
+            <CodeEditor
+              value={inputCode}
+              onChange={setInputCode}
+              label="Input Code"
+              disabled={isAnalyzing}
+              language={selectedLanguage}
+              onLanguageChange={setSelectedLanguage}
+            />
+          </div>
+          
+          <div className={styles.editorWrapper}>
+            {documentedCode ? (
+              <CodeEditor
+                value={documentedCode}
+                onChange={() => {}}
+                label="Documented Code"
+                readOnly={true}
+                disabled={false}
+                language={selectedLanguage}
+                onLanguageChange={() => {}}
+              />
+            ) : (
+              <div className={styles.placeholderEditor}>
+                <p>Documented code will appear here after analysis.</p>
+              </div>
+            )}
+          </div>
+        </div>
         
         <AnalyzeButton onClick={handleAnalyze} isAnalyzing={isAnalyzing} />
 
         {error && <ErrorDisplay error={error} />}
-        
-        {documentedCode && (
-          <CodeEditor
-            value={documentedCode}
-            onChange={() => {}}
-            label="Documented Code"
-            readOnly={true}
-            disabled={false}
-            language={selectedLanguage}
-            onLanguageChange={() => {}} // This won't be used for the read-only editor
-          />
-        )}
       </div>
     </ErrorBoundary>
   );

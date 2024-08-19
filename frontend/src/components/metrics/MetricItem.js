@@ -4,22 +4,31 @@ import styles from './styles/MetricsDisplay.module.css';
 import { formatTime } from './utils';
 
 /**
- * Renders a single metric item.
+ * Renders a metric item displaying a label and its corresponding value.
  *
  * @param {Object} props - The component props.
- * @param {string} props.label - The label for the metric.
- * @param {number|string} props.value - The value of the metric.
- * @param {boolean} [props.isTime=false] - Whether the value should be formatted as time.
- * @returns {JSX.Element} A component displaying a single metric.
+ * @param {string} props.label - The label for the metric item.
+ * @param {number|string} props.value - The value for the metric item. Can be a number or a string.
+ * @param {boolean} [props.isTime=false] - Indicates if the value should be formatted as time.
+ * @returns {JSX.Element} The rendered metric item.
  */
-const MetricItem = ({ label, value, isTime = false }) => (
-  <div className={styles.metricItem}>
-    <span className={styles.metricLabel}>{label}</span>
-    <span className={styles.metricValue}>
-      {isTime ? `${formatTime(value)}s` : value}
-    </span>
-  </div>
-);
+const MetricItem = ({ label, value, isTime = false }) => {
+  let formattedValue;
+  if (isTime) {
+    formattedValue = `${formatTime(value)}s`;
+  } else if (label === 'Token/Time Ratio') {
+    formattedValue = value.toFixed(3);
+  } else {
+    formattedValue = value;
+  }
+
+  return (
+    <div className={styles.metricItem}>
+      <span className={styles.metricLabel}>{label}</span>
+      <span className={styles.metricValue}>{formattedValue}</span>
+    </div>
+  );
+};
 
 MetricItem.propTypes = {
   label: PropTypes.string.isRequired,
