@@ -15,29 +15,54 @@ documntr is an AI-powered web application that automatically generates documenta
 
 ```
 documntr/
+├── backend/
+│   ├── documntr/
+│   │   ├── __init__.py
+│   │   ├── code_analyzer.py
+│   │   ├── constants.py
+│   │   ├── documntr.py
+│   │   ├── metrics.py
+│   │   └── openai_client.py
+│   ├── app.py
+│   ├── README.md
+│   ├── requirements.txt
+│   └── Dockerfile
 ├── frontend/
 │   ├── public/
+│   │   ├── favicon.ico
 │   │   └── index.html
 │   ├── src/
 │   │   ├── components/
+│   │   │   ├── editor/
+│   │   │   │   ├── config/
+│   │   │   │   │    ├── themes/
+│   │   │   │   │    │    └── customDractulaTheme.js
+│   │   │   │   │    ├── codeMirrorConfig.js
+│   │   │   │   ├── styles/
+│   │   │   │   │    ├── CodeEditor.module.css
+│   │   │   │   │    └── CopyButton.module.css
+│   │   │   │   ├── utils/
+│   │   │   │   │    └── languageOptions.js
+│   │   │   │   ├── CodeEditor.js
+│   │   │   │   ├── CodeMirrorWrapper.js
+│   │   │   │   ├── CopyButton.js
+│   │   │   │   ├── EditorHeader.js
+│   │   │   │   └── LanguageSelector.js
+│   │   │   ├── metrics/
+│   │   │   │   ├── config/
+│   │   │   │   │    └── metricsConfig.js
+│   │   │   │   ├── styles/
+│   │   │   │   │    ├── MetricsDisplay.module.css
+│   │   │   │   │    └── SessionButton.module.css
+│   │   │   │   ├── MetricItem.js
+│   │   │   │   ├── MetricsDisplay.js
+│   │   │   │   ├── SessionButton.js
+│   │   │   │   └── utils.js
 │   │   │   ├── AnalyzeButton.js
-│   │   │   ├── CodeEditor.js
-│   │   │   ├── CopyButton.js
-│   │   │   ├── CustomScrollbars.js
 │   │   │   ├── ErrorBoundary.js
-│   │   │   ├── ErrorDisplay.js
-│   │   │   ├── MetricsDisplay.js
-│   │   │   └── SessionButton.js
-│   │   ├── config/
-│   │   │   ├── codeMirrorConfig.js
-│   │   │   ├── customDraculaTheme.js
-│   │   │   └── languageOptions.js
+│   │   │   └── ErrorDisplay.js
 │   │   ├── styles/
 │   │   │   ├── AnalyzeButton.module.css
-│   │   │   ├── CodeEditor.module.css
-│   │   │   ├── CopyButton.module.css
-│   │   │   ├── MetricsDisplay.module.css
-│   │   │   ├── SessionButton.module.css
 │   │   │   └── scrollbarStyles.js
 │   │   ├── App.js
 │   │   ├── App.module.css
@@ -46,12 +71,6 @@ documntr/
 │   ├── .env
 │   ├── package.json
 │   ├── README.md
-│   └── Dockerfile
-├── backend/
-│   ├── app.py
-│   ├── chatbot.py
-│   ├── README.md
-│   ├── requirements.txt
 │   └── Dockerfile
 ├── docker-compose.yml
 ├── .dockerignore
