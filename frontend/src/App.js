@@ -111,13 +111,22 @@ function App() {
       
       if (response.data && response.data.documented_code) {
         setDocumentedCode(response.data.documented_code);
-        setMetrics(prev => ({
-          generationTime: prev.generationTime,
-          averageTime: response.data.average_time,
-          inputTokenCount: response.data.total_tokens,
-          tokenTimeRatio: response.data.token_time_ratio,
-          numGenerations: prev.numGenerations + 1
-        }));
+        const endTime = performance.now();
+        const actualGenerationTime = (endTime - startTimeRef.current) / 1000;
+        
+        setMetrics(prev => {
+          const newNumGenerations = prev.numGenerations + 1;
+          const newTotalTime = prev.averageTime * prev.numGenerations + actualGenerationTime;
+          const newAverageTime = newTotalTime / newNumGenerations;
+          
+          return {
+            generationTime: parseFloat(actualGenerationTime.toFixed(3)),
+            averageTime: parseFloat(newAverageTime.toFixed(3)),
+            inputTokenCount: response.data.total_tokens,
+            tokenTimeRatio: parseFloat((response.data.total_tokens / actualGenerationTime).toFixed(3)),
+            numGenerations: newNumGenerations
+          };
+        });
       } else {
         throw new Error('Invalid response from server');
       }
