@@ -45,9 +45,11 @@ function App() {
         const editorView = inputEditorRef.current.view;
         const editorState = editorView.state;
         const currentContent = editorState.doc.toString();
-        console.log("Current content:", currentContent);
         setInputCode(currentContent);
         handleAnalyze(currentContent);
+      } else {
+        console.error('Unable to access editor content');
+        setError('Unable to access editor content. Please try again.');
       }
     }
   };
@@ -87,20 +89,26 @@ function App() {
    * @returns {Promise<void>} A promise that resolves when the analysis is complete.
    */
   const handleAnalyze = async (codeToAnalyze) => {
-    if (!codeToAnalyze || !codeToAnalyze.trim()) {
+    // Ensure codeToAnalyze is a string
+    if (typeof codeToAnalyze !== 'string') {
+      console.error('Invalid input: codeToAnalyze is not a string', codeToAnalyze);
+      setError("Invalid input. Please ensure you've entered valid code.");
+      return;
+    }
+  
+    if (!codeToAnalyze.trim()) {
       setError("Please enter some code before analyzing.");
       return;
     }
-
+  
     setIsAnalyzing(true);
     isAnalyzingRef.current = true;
     setError(null);
     setDocumentedCode('');
     startTimeRef.current = performance.now();
     updateTimer();
-
+  
     try {
-      console.log("Sending code for analysis:", codeToAnalyze);
       const response = await axios.post('http://localhost:5000/analyze', 
         { code: codeToAnalyze, language: selectedLanguage },
         { 
