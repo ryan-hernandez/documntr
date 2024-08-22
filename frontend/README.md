@@ -9,36 +9,6 @@ This is the frontend for the documntr application, built with React.
 - Axios for API requests
 - React Custom Scrollbars for custom scrolling
 
-## Project Structure
-
-```
-frontend/
-├── public/
-│   └── index.html
-├── src/
-│   ├── components/
-│   │   ├── AnalyzeButton.js
-│   │   ├── CodeEditor.js
-│   │   ├── ErrorBoundary.js
-│   │   ├── ErrorDisplay.js
-│   │   ├── MetricsDisplay.js
-│   │   └── SessionButton.js
-│   ├── config/
-│   │   └── codeMirrorConfig.js
-│   ├── styles/
-│   │   ├── CodeEditor.module.css
-│   │   ├── MetricsDisplay.module.css
-│   │   ├── scrollbarStyles.js
-│   │   └── SessionButton.module.css
-│   ├── App.js
-│   ├── App.module.css
-│   ├── index.css
-│   └── index.js
-├── package.json
-├── README.md
-└── Dockerfile
-```
-
 ## Setup
 
 1. Navigate to the frontend directory:

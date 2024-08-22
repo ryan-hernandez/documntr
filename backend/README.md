@@ -8,23 +8,6 @@ This is the backend for the documntr application, built with Flask.
 - Flask-CORS for handling Cross-Origin Resource Sharing (CORS)
 - OpenAI API for AI-powered code documentation
 
-## Project Structure
-
-```
-backend/
-├── app.py                 # Main Flask application
-├── requirements.txt       # Python dependencies
-├── Dockerfile             # Docker configuration for the backend
-├── README.md              # Backend documentation (this file)
-└── documntr/              # Documntr package
-    ├── __init__.py        # Package initializer
-    ├── documntr.py        # Main Documntr class
-    ├── metrics.py         # Metrics tracking
-    ├── code_analyzer.py   # Code analysis logic
-    ├── constants.py       # Constant values and configurations
-    └── openai_client.py   # OpenAI API client
-```
-
 ## Setup
 
 1. Navigate to the backend directory:

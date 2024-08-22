@@ -92,8 +92,6 @@ function App() {
       setError('Unable to access editor content. Please try again.');
     }
 
-    console.log(codeToAnalyze);
-
     // Ensure codeToAnalyze is a string
     if (typeof codeToAnalyze !== 'string') {
       console.error('Invalid input: codeToAnalyze is not a string', codeToAnalyze);
