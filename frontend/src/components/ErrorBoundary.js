@@ -12,7 +12,7 @@ class ErrorBoundary extends React.Component {
 
   /**
    * Updates state based on the occurrence of an error.
-   * 
+   *
    * @param {Error} error - The error that was thrown.
    * @returns {Object|null} - Returns an object to update state, or null to indicate no change.
    */
@@ -22,7 +22,7 @@ class ErrorBoundary extends React.Component {
 
   /**
    * Logs the error and error information to the console.
-   * 
+   *
    * @param {Error} error - The uncaught error.
    * @param {ErrorInfo} errorInfo - Information about the error, such as component stack trace.
    */
@@ -32,7 +32,7 @@ class ErrorBoundary extends React.Component {
 
   /**
    * Renders the fallback UI if an error has occurred; otherwise, renders the child components.
-   * 
+   *
    * @returns {React.Element} - The rendered output, either the fallback UI or the children.
    */
   render() {

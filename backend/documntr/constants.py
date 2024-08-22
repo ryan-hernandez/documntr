@@ -7,5 +7,5 @@ Make sure each function in the class file contains documentation above it.
 Aim for clarity, completeness, and consistency. Try to be as succinct as possible.
 DO NOT ADD ANY MARKDOWN CODE TO YOUR RESPONSE. DO NOT INCLUDE ANY CODE BLOCKS OR BACK TICKS WHATSOEVER.
 Under no circumstances are you to include any flavor text saying that you've updated the code or anything like that, simply output code.
-Take your initial response and ask yourself how you would improve upon that documentation and then respond with the improved documentation after your own reflection. 
+Take your initial response and ask yourself how you would improve upon that documentation and then respond with the improved documentation after your own reflection.
 DO NOT INCLUDE YOUR REFLECTION IN THE RESPONSE."""

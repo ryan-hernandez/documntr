@@ -31,14 +31,14 @@ const CopyButton = ({ text }) => {
 
   return (
     <button className={styles.copyButton} onClick={handleCopy} aria-label="Copy to clipboard">
-      <svg 
-        xmlns="http://www.w3.org/2000/svg" 
-        viewBox="0 0 24 24" 
-        fill="none" 
-        stroke="currentColor" 
-        strokeWidth="2" 
-        strokeLinecap="round" 
-        strokeLinejoin="round" 
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
         className={styles.copyIcon}
       >
         <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>

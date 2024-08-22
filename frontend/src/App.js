@@ -12,7 +12,7 @@ import { languageOptions } from './components/editor/utils/languageOptions';
 /**
  * App component that manages the code analysis functionality.
  * It allows users to input code, analyze it, and view the documented results.
- * 
+ *
  * @returns {JSX.Element} The rendered App component.
  */
 function App() {
@@ -35,7 +35,7 @@ function App() {
 
   /**
    * Handles the key press event for initiating code analysis.
-   * 
+   *
    * @param {KeyboardEvent} event - The keyboard event triggered when a key is pressed.
    */
   const handleKeyPress = (event) => {
@@ -84,7 +84,7 @@ function App() {
   /**
    * Handles the analysis of the input code by making an API request
    * to retrieve the documented code and updates metrics.
-   * 
+   *
    * @param {string} codeToAnalyze - The code to be analyzed.
    * @returns {Promise<void>} A promise that resolves when the analysis is complete.
    */
@@ -95,38 +95,38 @@ function App() {
       setError("Invalid input. Please ensure you've entered valid code.");
       return;
     }
-  
+
     if (!codeToAnalyze.trim()) {
       setError("Please enter some code before analyzing.");
       return;
     }
-  
+
     setIsAnalyzing(true);
     isAnalyzingRef.current = true;
     setError(null);
     setDocumentedCode('');
     startTimeRef.current = performance.now();
     updateTimer();
-  
+
     try {
-      const response = await axios.post('http://localhost:5000/analyze', 
+      const response = await axios.post('http://localhost:5000/analyze',
         { code: codeToAnalyze, language: selectedLanguage },
-        { 
+        {
           headers: { 'Content-Type': 'application/json' },
           timeout: 30000 // 30 seconds timeout
         }
       );
-      
+
       if (response.data && response.data.documented_code) {
         setDocumentedCode(response.data.documented_code);
         const endTime = performance.now();
         const actualGenerationTime = (endTime - startTimeRef.current) / 1000;
-        
+
         setMetrics(prev => {
           const newNumGenerations = prev.numGenerations + 1;
           const newTotalTime = prev.averageTime * prev.numGenerations + actualGenerationTime;
           const newAverageTime = newTotalTime / newNumGenerations;
-          
+
           return {
             generationTime: parseFloat(actualGenerationTime.toFixed(3)),
             averageTime: parseFloat(newAverageTime.toFixed(3)),
@@ -171,7 +171,7 @@ function App() {
     <ErrorBoundary>
       <div className={styles.app}>
         <h1 className={styles.title}>documntr</h1>
-        
+
         <SessionButton onSaveSession={saveAndResetSession} />
 
         <MetricsDisplay metrics={metrics} />
@@ -188,7 +188,7 @@ function App() {
               ref={inputEditorRef}
             />
           </div>
-          
+
           <div className={styles.editorWrapper}>
             {documentedCode ? (
               <CodeEditor
@@ -207,7 +207,7 @@ function App() {
             )}
           </div>
         </div>
-        
+
         <AnalyzeButton onClick={handleAnalyze} isAnalyzing={isAnalyzing} />
         <span className={styles.analyzeDescriptor}>
           shift+enter

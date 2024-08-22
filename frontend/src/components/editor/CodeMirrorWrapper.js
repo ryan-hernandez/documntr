@@ -6,7 +6,7 @@ import { codeMirrorSetup } from './config/codeMirrorConfig';
 import styles from './styles/CodeEditor.module.css';
 
 /**
- * A wrapper component for the CodeMirror editor that handles various props 
+ * A wrapper component for the CodeMirror editor that handles various props
  * including value, change handling, read-only mode, disabled state, and language.
  *
  * @param {Object} props - The component properties.

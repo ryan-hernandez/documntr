@@ -7,7 +7,7 @@ import CopyButton from './CopyButton';
  * Renders the header for the code editor, displaying a label,
  * a language selector if not in read-only mode, or a copy button
  * if in read-only mode.
- * 
+ *
  * @param {Object} props - Component properties.
  * @param {string} props.label - The label to display in the header.
  * @param {boolean} props.readOnly - Indicates if the editor is in read-only mode.

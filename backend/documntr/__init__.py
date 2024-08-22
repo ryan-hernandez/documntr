@@ -1,3 +1,3 @@
 from .documntr import Documntr
 
-__all__ = ['Documntr']
+__all__ = ["Documntr"]

@@ -1,12 +1,13 @@
 import time
-from .openai_client import OpenAIClient
+
 from .constants import SYSTEM_CONTENT
+from .openai_client import OpenAIClient
+
 
 class CodeAnalyzer:
     @staticmethod
     def analyze(code):
-        """
-        Analyzes the provided code and returns suggestions for improvement.
+        """Analyzes the provided code and returns suggestions for improvement.
 
         Parameters:
         code (str): The code to be analyzed.
@@ -17,18 +18,18 @@ class CodeAnalyzer:
         """
         if not code:
             return {"error": "Please enter some code to analyze."}
-        
+
         start_time = time.time()
 
         try:
             messages = [
                 {"role": "system", "content": SYSTEM_CONTENT},
-                {"role": "user", "content": f"Analyze the following code:\n\n{code}"}
+                {"role": "user", "content": f"Analyze the following code:\n\n{code}"},
             ]
 
             response = OpenAIClient.create_chat_completion(messages)
-            suggestion = response.choices[0].message['content']
-            
+            suggestion = response.choices[0].message["content"]
+
             generation_time = time.time() - start_time
             input_tokens = len(code.split())
 

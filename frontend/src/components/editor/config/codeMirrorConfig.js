@@ -1,7 +1,7 @@
 /**
  * Configuration settings for the CodeMirror editor.
  * This object contains various options to customize the editor's behavior and appearance.
- * 
+ *
  * @constant {Object} codeMirrorSetup - The configuration object for CodeMirror
  * @property {boolean} lineNumbers - Enables line numbering in the editor.
  * @property {boolean} highlightActiveLineGutter - Highlights the line gutter of the active line.
@@ -26,7 +26,7 @@
  * @property {boolean} foldKeymap - Sets the keymap for folding actions.
  * @property {boolean} completionKeymap - Configures the keymap for autocompletion actions.
  * @property {boolean} lintKeymap - Sets the keymap for linting actions.
- */  
+ */
 export const codeMirrorSetup = {
   lineNumbers: true,
   highlightActiveLineGutter: true,

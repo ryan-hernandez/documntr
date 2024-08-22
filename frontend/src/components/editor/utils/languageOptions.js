@@ -16,7 +16,7 @@ import { csharp } from '@replit/codemirror-lang-csharp'
 /**
  * An array of programming language options available for the editor.
  * Each option contains a value, label, and associated language extension.
- * 
+ *
  * @type {Array<{value: string, label: string, extension: any}>}
  */
 export const languageOptions = [

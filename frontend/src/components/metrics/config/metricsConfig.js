@@ -1,6 +1,6 @@
 /**
  * Configuration for metrics, including labels and keys.
- * 
+ *
  * @typedef {Object} MetricConfig
  * @property {string} label - The display name of the metric.
  * @property {string} key - The unique key for the metric.

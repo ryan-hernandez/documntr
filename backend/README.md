@@ -61,7 +61,7 @@ backend/
 ## API Endpoints
 
 - `POST /analyze`: Analyzes and documents Python code.
-  - Request body: 
+  - Request body:
   ```
   { "code": "your_code_here" }
   ```

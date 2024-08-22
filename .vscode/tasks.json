@@ -1,0 +1,17 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Autoflake",
+            "type": "shell",
+            "command": "autoflake",
+            "args": [
+                "--remove-all-unused-imports",
+                "--remove-unused-variables",
+                "--in-place",
+                "${file}"
+            ],
+            "problemMatcher": []
+        }
+    ]
+}

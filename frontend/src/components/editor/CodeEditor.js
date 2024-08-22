@@ -5,7 +5,7 @@ import styles from './styles/CodeEditor.module.css';
 
 /**
  * CodeEditor component that renders a code editor with a header.
- * 
+ *
  * @param {Object} props - The properties passed to the component.
  * @param {string} props.value - The current value of the code editor.
  * @param {function} props.onChange - Callback function triggered when the value changes.
@@ -15,13 +15,13 @@ import styles from './styles/CodeEditor.module.css';
  * @param {string} props.language - The programming language for syntax highlighting.
  * @param {function} props.onLanguageChange - Callback function triggered when the language changes.
  * @param {React.Ref} ref - The ref forwarded to the CodeMirrorWrapper.
- * 
+ *
  * @return {JSX.Element} The rendered component.
  */
 const CodeEditor = forwardRef(({ value, onChange, label, readOnly = false, disabled = false, language, onLanguageChange }, ref) => {
   return (
     <div className={styles.codeContainer}>
-      <EditorHeader 
+      <EditorHeader
         label={label}
         readOnly={readOnly}
         disabled={disabled}
