@@ -41,16 +41,7 @@ function App() {
   const handleKeyPress = (event) => {
     if (event.key === 'Enter' && event.shiftKey && !isAnalyzing) {
       event.preventDefault();
-      if (inputEditorRef.current && inputEditorRef.current.view) {
-        const editorView = inputEditorRef.current.view;
-        const editorState = editorView.state;
-        const currentContent = editorState.doc.toString();
-        setInputCode(currentContent);
-        handleAnalyze(currentContent);
-      } else {
-        console.error('Unable to access editor content');
-        setError('Unable to access editor content. Please try again.');
-      }
+      handleAnalyze();
     }
   };
 
@@ -88,7 +79,21 @@ function App() {
    * @param {string} codeToAnalyze - The code to be analyzed.
    * @returns {Promise<void>} A promise that resolves when the analysis is complete.
    */
-  const handleAnalyze = async (codeToAnalyze) => {
+  const handleAnalyze = async () => {
+    let codeToAnalyze = "";
+    if (inputEditorRef.current && inputEditorRef.current.view) {
+      const editorView = inputEditorRef.current.view;
+      const editorState = editorView.state;
+      const currentContent = editorState.doc.toString();
+      codeToAnalyze = currentContent;
+      setInputCode(currentContent);
+    } else {
+      console.error('Unable to access editor content');
+      setError('Unable to access editor content. Please try again.');
+    }
+
+    console.log(codeToAnalyze);
+
     // Ensure codeToAnalyze is a string
     if (typeof codeToAnalyze !== 'string') {
       console.error('Invalid input: codeToAnalyze is not a string', codeToAnalyze);
@@ -113,7 +118,7 @@ function App() {
         { code: codeToAnalyze, language: selectedLanguage },
         {
           headers: { 'Content-Type': 'application/json' },
-          timeout: 30000 // 30 seconds timeout
+          timeout: 60000 // 60 seconds timeout
         }
       );
 
@@ -193,12 +198,12 @@ function App() {
             {documentedCode ? (
               <CodeEditor
                 value={documentedCode}
-                onChange={() => {}}
+                onChange={() => { }}
                 label="Documented Code"
                 readOnly={true}
                 disabled={false}
                 language={selectedLanguage}
-                onLanguageChange={() => {}}
+                onLanguageChange={() => { }}
               />
             ) : (
               <div className={styles.placeholderEditor}>
