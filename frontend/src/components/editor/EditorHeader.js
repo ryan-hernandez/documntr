@@ -4,18 +4,16 @@ import LanguageSelector from './LanguageSelector';
 import CopyButton from './CopyButton';
 
 /**
- * Renders the header for the code editor, displaying a label,
- * a language selector if not in read-only mode, or a copy button
- * if in read-only mode.
+ * EditorHeader component displays the header for the code editor.
  *
- * @param {Object} props - Component properties.
+ * @param {Object} props - The component props.
  * @param {string} props.label - The label to display in the header.
  * @param {boolean} props.readOnly - Indicates if the editor is in read-only mode.
  * @param {boolean} props.disabled - Indicates if the language selector is disabled.
- * @param {string} props.language - The currently selected language.
- * @param {Function} props.onLanguageChange - Function to call when the language changes.
- * @param {string} props.value - The text value to copy when in read-only mode.
- * @returns {JSX.Element} The rendered header component.
+ * @param {string} props.language - The currently selected programming language.
+ * @param {function} props.onLanguageChange - Callback function to handle language change.
+ * @param {string} props.value - The value to be copied when readOnly is true.
+ * @returns {JSX.Element} The rendered component.
  */
 const EditorHeader = ({ label, readOnly, disabled, language, onLanguageChange, value }) => {
   return (

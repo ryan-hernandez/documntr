@@ -102,7 +102,6 @@ function App() {
           inputEditorRef={inputEditorRef}
         />
         <AnalyzeButton onClick={handleAnalyze} isAnalyzing={isAnalyzing} />
-        <span className={styles.analyzeDescriptor}>shift+enter</span>
         {error && <ErrorDisplay error={error} />}
       </div>
     </ErrorBoundary>

@@ -19,7 +19,7 @@ import styles from './styles/CodeEditor.module.css';
  * @param {React.Ref} ref - Ref for the CodeMirror component.
  * @returns {JSX.Element} The rendered CodeEditor component.
  */
-const CodeEditor = React.forwardRef(({ value, onChange, label, disabled, language, onLanguageChange, readOnly }, ref) => {
+const CodeEditor = React.forwardRef(({ value, onChange, disabled, language, readOnly }, ref) => {
   return (
     <div className={styles.codeEditorContainer}>
       <CodeMirror

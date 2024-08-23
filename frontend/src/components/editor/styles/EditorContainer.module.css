@@ -60,6 +60,8 @@
 
 /**
  * Ensures that the CodeMirror editor fills the entire content area.
+ *
+ * @global .cm-editor
  */
 .editorContent :global(.cm-editor) {
     height: 100% !important;
@@ -69,6 +71,8 @@
 
 /**
  * Ensures that the CodeMirror scroller fills the available space and is scrollable.
+ *
+ * @global .cm-scroller
  */
 .editorContent :global(.cm-scroller) {
     flex: 1 !important;
@@ -77,6 +81,8 @@
 
 /**
  * Ensures that the CodeMirror content area has a minimum height for proper display.
+ *
+ * @global .cm-content
  */
 .editorContent :global(.cm-content) {
     min-height: 100% !important;
@@ -84,6 +90,8 @@
 
 /**
  * Ensures that the CodeMirror gutters fill the entire height of the editor.
+ *
+ * @global .cm-gutters
  */
 .editorContent :global(.cm-gutters) {
     height: 100% !important;

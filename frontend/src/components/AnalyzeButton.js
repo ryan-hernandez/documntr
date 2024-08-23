@@ -15,7 +15,9 @@ const AnalyzeButton = ({ onClick, isAnalyzing }) => (
       {isAnalyzing ? 'Analyzing...' : 'Analyze'}
     </span>
     {isAnalyzing && <span className={styles.spinner}></span>}
+    <span className={styles.analyzeDescriptor}>shift+enter</span>
   </button>
+
 );
 
 export default AnalyzeButton;

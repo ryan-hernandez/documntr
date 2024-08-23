@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 
 /**
- * Custom hook to track and manage metrics related to generation times and token counts.
+ * Custom hook to manage and update metrics related to generations.
  *
  * @param {Object} initialMetrics - The initial metrics state.
  * @returns {Object} An object containing the current metrics and functions to update them.
@@ -10,16 +10,14 @@ const useMetrics = (initialMetrics) => {
     const [metrics, setMetrics] = useState(initialMetrics);
 
     /**
-     * Updates the metrics based on the provided result from a generation.
+     * Updates the metrics based on the results from a new generation.
      *
-     * @param {Object} result - The result object containing generation time and total tokens.
-     * @param {number} result.generationTime - The time taken for the latest generation.
-     * @param {number} result.total_tokens - The total number of tokens processed.
+     * @param {Object} result - The result of a generation containing generationTime and total_tokens.
      */
     const updateMetrics = useCallback((result) => {
         setMetrics((prev) => {
             const newNumGenerations = prev.numGenerations + 1;
-            const newTotalTime = parseFloat(prev.totalTime) + parseFloat(result.generationTime)
+            const newTotalTime = parseFloat(prev.totalTime) + parseFloat(result.generationTime);
             const newTotalTokens = prev.totalTokens + result.total_tokens;
             const newAverageTime = newTotalTime / newNumGenerations;
             const newAverageTokenTimeRatio = newTotalTokens / newTotalTime;
@@ -42,7 +40,7 @@ const useMetrics = (initialMetrics) => {
     /**
      * Updates the generation time in the metrics.
      *
-     * @param {number} time - The new generation time to be set.
+     * @param {number} time - The generation time to be updated.
      */
     const updateGenerationTime = useCallback((time) => {
         setMetrics((prev) => ({

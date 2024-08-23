@@ -42,12 +42,6 @@
   font-style: italic;
 }
 
-.analyzeDescriptor {
-  margin-top: -10px;
-  font-size: xx-small;
-  opacity:50%;
-}
-
 .button {
   /* Button style */
   background-color: #f6f8fa;

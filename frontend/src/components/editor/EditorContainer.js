@@ -1,40 +1,32 @@
 import React from 'react';
 import styles from './styles/EditorContainer.module.css';
 import CodeEditor from './CodeEditor';
-import CopyButton from './CopyButton';
-import LanguageSelector from './LanguageSelector';
+import EditorHeader from './EditorHeader';
 
 /**
- * A functional component that wraps the code editor with a header, and optional controls.
+ * A wrapper component that encapsulates the editor header and the code editor.
  *
- * @param {Object} props - The properties for the component.
- * @param {string} props.label - The label displayed above the editor.
- * @param {string} props.code - The code to be edited.
- * @param {function} props.onChange - Function to call when the code changes.
- * @param {string} props.language - The selected programming language.
- * @param {function} props.onLanguageChange - Function to call when the language changes.
- * @param {boolean} props.disabled - Indicates if the editor should be disabled.
- * @param {boolean} props.readOnly - Indicates if the editor is in read-only mode.
- * @param {boolean} props.showCopyButton - Flag to show the copy button.
- * @param {boolean} props.showLanguageSelector - Flag to show the language selector.
+ * @param {Object} props - The component props.
+ * @param {string} props.label - The label for the editor.
+ * @param {string} props.code - The code to be displayed in the editor.
+ * @param {function} props.onChange - The callback function to handle code changes.
+ * @param {string} props.language - The programming language selected for the editor.
+ * @param {function} props.onLanguageChange - The callback function to change the language.
+ * @param {boolean} props.disabled - If true, disables the editor.
+ * @param {boolean} props.readOnly - If true, sets the editor to read-only mode.
  * @param {React.Ref} ref - The ref forwarded to the code editor.
- * @returns {JSX.Element} The rendered editor wrapper component.
+ * @returns {JSX.Element} The rendered editor wrapper.
  */
-const EditorWrapper = React.forwardRef(({ label, code, onChange, language, onLanguageChange, disabled, readOnly, showCopyButton, showLanguageSelector }, ref) => (
+const EditorWrapper = React.forwardRef(({ label, code, onChange, language, onLanguageChange, disabled, readOnly }, ref) => (
     <div className={styles.editorWrapper}>
-        <div className={styles.editorHeader}>
-            <h3>{label}</h3>
-            <div className={styles.editorControls}>
-                {showLanguageSelector && (
-                    <LanguageSelector
-                        language={language}
-                        onLanguageChange={onLanguageChange}
-                        disabled={disabled}
-                    />
-                )}
-                {showCopyButton && <CopyButton text={code} />}
-            </div>
-        </div>
+        <EditorHeader
+            label={label}
+            readOnly={readOnly}
+            disabled={disabled}
+            language={language}
+            onLanguageChange={onLanguageChange}
+            value={code}
+        />
         <div className={styles.editorContent}>
             {readOnly && !code ? (
                 <div className={styles.placeholderEditor}>
@@ -56,17 +48,17 @@ const EditorWrapper = React.forwardRef(({ label, code, onChange, language, onLan
 ));
 
 /**
- * The main container for the code editors.
+ * The main container component for code editing and displaying documented code.
  *
- * @param {Object} props - The properties for the component.
- * @param {string} props.inputCode - The code entered in the input editor.
- * @param {function} props.setInputCode - Function to update the input code.
- * @param {string} props.documentedCode - The code that has been documented.
+ * @param {Object} props - The component props.
+ * @param {string} props.inputCode - The input code for the editor.
+ * @param {function} props.setInputCode - The function to update the input code.
+ * @param {string} props.documentedCode - The documented code to be displayed.
  * @param {string} props.selectedLanguage - The currently selected programming language.
- * @param {function} props.setSelectedLanguage - Function to update the selected language.
- * @param {boolean} props.isAnalyzing - Flag to indicate if analysis is in progress.
- * @param {React.Ref} props.inputEditorRef - Ref for the input editor component.
- * @returns {JSX.Element} The rendered editor container component.
+ * @param {function} props.setSelectedLanguage - The function to update the selected language.
+ * @param {boolean} props.isAnalyzing - If true, the editors are currently disabled.
+ * @param {React.Ref} props.inputEditorRef - A ref for the input editor.
+ * @returns {JSX.Element} The rendered editor container.
  */
 const EditorContainer = ({
     inputCode,
