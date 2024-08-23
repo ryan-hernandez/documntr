@@ -2,83 +2,77 @@ import { useState, useCallback, useRef } from 'react';
 import axios from 'axios';
 
 /**
- * Custom hook for analyzing code with a server.
+ * Custom hook for analyzing code.
  *
- * @param {Object} params - The parameters for the hook.
- * @param {function} params.onSuccess - Callback function to call on successful analysis.
- * @param {function} params.onError - Callback function to call on error during analysis.
- * @param {function} params.onTimerUpdate - Callback function to call for timer updates.
- * @returns {Object} - An object containing the analyzeCode method and isAnalyzing state.
+ * @param {Object} options - Options for the analysis.
+ * @param {Function} options.onSuccess - Callback to handle successful analysis.
+ * @param {Function} options.onError - Callback to handle errors during analysis.
+ * @param {Function} options.onProgress - Callback to report progress of analysis.
+ * @returns {Object} - Contains the analyzeCode function and isAnalyzing state.
  */
-const useCodeAnalysis = ({ onSuccess, onError, onTimerUpdate }) => {
+const useCodeAnalysis = ({ onSuccess, onError, onProgress }) => {
     const [isAnalyzing, setIsAnalyzing] = useState(false);
-    const timerRef = useRef(null);
     const startTimeRef = useRef(null);
+    const progressIntervalRef = useRef(null);
 
-    const getTokenCount = (str) => {
-        str = str.trim();
-        if (str === '') return 0;
-        return str.split(/\s+/).length;
+    /**
+     * Estimates the number of tokens in a given text.
+     *
+     * @param {string} text - The text to estimate tokens from.
+     * @returns {number} - The estimated number of tokens.
+     */
+    const estimateTokens = (text) => {
+        return text.split(/\s+/).length;
     };
 
     /**
-     * Updates the timer and calls onTimerUpdate with the elapsed time.
-     * This function is called recursively with requestAnimationFrame.
+     * Updates the progress of the analysis.
+     * This function is called at regular intervals to report
+     * the elapsed time since the analysis started.
      */
-    const updateTimer = useCallback(() => {
+    const updateProgress = useCallback(() => {
         if (startTimeRef.current) {
             const currentTime = performance.now();
-            const elapsedTime = (currentTime - startTimeRef.current) / 1000;
-            onTimerUpdate(elapsedTime);
-            timerRef.current = requestAnimationFrame(updateTimer);
+            const elapsedTime = (currentTime - startTimeRef.current) / 1000; // Convert to seconds
+            onProgress(elapsedTime);
         }
-    }, [onTimerUpdate]);
+    }, [onProgress]);
 
     /**
-     * Analyzes the provided code by sending it to a server endpoint.
+     * Analyzes the provided code in the specified programming language.
      *
-     * @param {string} code - The code to analyze.
+     * @param {string} code - The code to be analyzed.
      * @param {string} language - The programming language of the code.
      * @returns {Promise<void>} - A promise that resolves when the analysis is complete.
      */
     const analyzeCode = useCallback(async (code, language) => {
         setIsAnalyzing(true);
         startTimeRef.current = performance.now();
-        updateTimer();
+        progressIntervalRef.current = setInterval(updateProgress, 10); // Update every 10ms for smoother animation
 
         try {
-            const response = await axios.post(
-                'http://localhost:5000/analyze',
-                { code, language },
-                {
-                    headers: { 'Content-Type': 'application/json' },
-                    timeout: 60000
-                }
-            );
+            const inputTokens = estimateTokens(code);
 
-            if (response.data && response.data.documented_code) {
-                const endTime = performance.now();
-                const generationTime = (endTime - startTimeRef.current) / 1000;
-                console.log(response.data);
-                onSuccess({
-                    documented_code: response.data.documented_code,
-                    total_tokens: getTokenCount(code),
-                    generationTime: generationTime
-                });
-            } else {
-                throw new Error('Invalid response from server');
-            }
-        } catch (err) {
-            console.error('Analysis error:', err);
-            onError(err.response?.data?.error || err.message || 'An error occurred during analysis');
+            const response = await axios.post('http://localhost:5000/analyze', { code, language });
+
+            const endTime = performance.now();
+            const generationTime = (endTime - startTimeRef.current) / 1000; // Convert to seconds
+
+            const result = {
+                ...response.data,
+                generationTime,
+                inputTokens,
+            };
+
+            onSuccess(result);
+        } catch (error) {
+            onError(error.response?.data?.error || 'An error occurred during analysis');
         } finally {
             setIsAnalyzing(false);
+            clearInterval(progressIntervalRef.current);
             startTimeRef.current = null;
-            if (timerRef.current) {
-                cancelAnimationFrame(timerRef.current);
-            }
         }
-    }, [onSuccess, onError, updateTimer]);
+    }, [onSuccess, onError, updateProgress]);
 
     return { analyzeCode, isAnalyzing };
 };

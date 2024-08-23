@@ -1,62 +1,105 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 /**
- * Custom hook to manage and update metrics related to generations.
+ * Custom hook to manage the metrics of a testing session.
+ * Initializes a new session or loads an existing session from localStorage.
  *
- * @param {Object} initialMetrics - The initial metrics state.
- * @returns {Object} An object containing the current metrics and functions to update them.
+ * @returns {Object} An object containing the current test session and functions to update metrics.
  */
-const useMetrics = (initialMetrics) => {
-    const [metrics, setMetrics] = useState(initialMetrics);
+const useMetrics = () => {
+    const [testSession, setTestSession] = useState(() => {
+        const sessionId = new Date().toISOString();
+        return {
+            id: sessionId,
+            generationCount: 0,
+            generations: {},
+            latestGenerationTime: 0
+        };
+    });
 
     /**
-     * Updates the metrics based on the results from a new generation.
+     * Effect to load existing session from localStorage upon initialization.
      *
-     * @param {Object} result - The result of a generation containing generationTime and total_tokens.
+     * @returns {void}
+     */
+    useEffect(() => {
+        const storedSession = localStorage.getItem('currentTestSession');
+        if (storedSession) {
+            setTestSession(JSON.parse(storedSession));
+        }
+    }, []);
+
+    /**
+     * Updates the metrics with the results of a generation.
+     *
+     * @param {Object} result - The result of the generation containing generation time and input tokens.
+     * @returns {void}
      */
     const updateMetrics = useCallback((result) => {
-        setMetrics((prev) => {
-            const newNumGenerations = prev.numGenerations + 1;
-            const newTotalTime = parseFloat(prev.totalTime) + parseFloat(result.generationTime);
-            const newTotalTokens = prev.totalTokens + result.total_tokens;
-            const newAverageTime = newTotalTime / newNumGenerations;
-            const newAverageTokenTimeRatio = newTotalTokens / newTotalTime;
-            const newAverageTokens = newTotalTokens / newNumGenerations;
-
-            return {
+        setTestSession(prevSession => {
+            const newGenerationCount = prevSession.generationCount + 1;
+            const newGeneration = {
                 generationTime: parseFloat(result.generationTime.toFixed(3)),
-                totalTime: newTotalTime.toFixed(3),
-                averageTime: parseFloat(newAverageTime.toFixed(3)),
-                inputTokenCount: result.total_tokens,
-                totalTokens: newTotalTokens,
-                tokenTimeRatio: parseFloat((result.total_tokens / result.generationTime).toFixed(3)),
-                averageTokenTimeRatio: parseFloat(newAverageTokenTimeRatio.toFixed(3)),
-                numGenerations: newNumGenerations,
-                averageTokens: parseFloat(newAverageTokens.toFixed(2)),
+                inputTokens: result.inputTokens || 0
             };
+
+            const updatedSession = {
+                ...prevSession,
+                generationCount: newGenerationCount,
+                generations: {
+                    ...prevSession.generations,
+                    [newGenerationCount]: newGeneration
+                },
+                latestGenerationTime: newGeneration.generationTime  // Update latest generation time
+            };
+
+            localStorage.setItem('currentTestSession', JSON.stringify(updatedSession));
+
+            return updatedSession;
         });
     }, []);
 
     /**
-     * Updates the generation time in the metrics.
+     * Updates the latest generation time in the session.
      *
-     * @param {number} time - The generation time to be updated.
+     * @param {number} time - The latest generation time.
+     * @returns {void}
      */
     const updateGenerationTime = useCallback((time) => {
-        setMetrics((prev) => ({
-            ...prev,
-            generationTime: parseFloat(time.toFixed(3))
+        setTestSession(prevSession => ({
+            ...prevSession,
+            latestGenerationTime: parseFloat(time.toFixed(3))
         }));
     }, []);
 
     /**
-     * Resets the metrics to the initial state defined in initialMetrics.
+     * Resets the metrics by creating a new session.
+     *
+     * @returns {void}
      */
     const resetMetrics = useCallback(() => {
-        setMetrics(initialMetrics);
-    }, [initialMetrics]);
+        const newSessionId = new Date().toISOString();
+        const newSession = {
+            id: newSessionId,
+            generationCount: 0,
+            generations: {},
+            latestGenerationTime: 0
+        };
+        setTestSession(newSession);
+        localStorage.setItem('currentTestSession', JSON.stringify(newSession));
+    }, []);
 
-    return { metrics, updateMetrics, resetMetrics, updateGenerationTime };
+    /**
+     * Saves the current session to localStorage and resets the metrics.
+     *
+     * @returns {void}
+     */
+    const saveSession = useCallback(() => {
+        localStorage.setItem(`testSession_${testSession.id}`, JSON.stringify(testSession));
+        resetMetrics();
+    }, [testSession, resetMetrics]);
+
+    return { testSession, updateMetrics, resetMetrics, saveSession, updateGenerationTime };
 };
 
 export default useMetrics;

@@ -11,22 +11,11 @@ import useKeyPress from './hooks/useKeyPress';
 import useMetrics from './hooks/useMetrics';
 import EditorContainer from './components/editor/EditorContainer';
 
-const INITIAL_METRICS = {
-  generationTime: 0,
-  totalTime: 0,
-  averageTime: 0,
-  tokenTimeRatio: 0,
-  numGenerations: 0,
-  inputTokenCount: 0,
-  totalTokens: 0,
-  averageTokenTimeRatio: 0,
-  averageTokens: 0,
-};
-
 /**
- * Main application component.
+ * The main application component that manages code analysis,
+ * session tracking, and error handling.
  *
- * @returns {JSX.Element} The rendered component.
+ * @returns {JSX.Element} The rendered application component.
  */
 function App() {
   const [inputCode, setInputCode] = useState('');
@@ -35,12 +24,14 @@ function App() {
   const [error, setError] = useState(null);
   const inputEditorRef = useRef(null);
 
-  const { metrics, updateMetrics, resetMetrics, updateGenerationTime } = useMetrics(INITIAL_METRICS);
+  const { testSession, updateMetrics, saveSession, updateGenerationTime } = useMetrics();
 
   /**
-   * Callback function to handle successful code analysis.
+   * Handles the success callback for code analysis,
+   * updating documented code and metrics.
    *
    * @param {Object} result - The result of the code analysis.
+   * @param {string} result.documented_code - The documented code string.
    */
   const handleAnalysisSuccess = useCallback((result) => {
     setDocumentedCode(result.documented_code);
@@ -48,22 +39,25 @@ function App() {
   }, [updateMetrics]);
 
   /**
-   * Callback function to update the timer on elapsed time.
+   * Handles the progress of the code analysis,
+   * updating the generation time.
    *
-   * @param {number} elapsedTime - The time elapsed since the analysis started.
+   * @param {number} elapsedTime - The elapsed time during analysis.
    */
-  const handleTimerUpdate = useCallback((elapsedTime) => {
+  const handleAnalysisProgress = useCallback((elapsedTime) => {
     updateGenerationTime(elapsedTime);
   }, [updateGenerationTime]);
 
   const { analyzeCode, isAnalyzing } = useCodeAnalysis({
     onSuccess: handleAnalysisSuccess,
     onError: setError,
-    onTimerUpdate: handleTimerUpdate,
+    onProgress: handleAnalysisProgress,
   });
 
   /**
-   * Function to handle the analysis of the code.
+   * Handles the analysis of the code by extracting the current
+   * content from the editor and invoking the analyzeCode function.
+   * Sets an error if no code is present for analysis.
    */
   const handleAnalyze = useCallback(() => {
     const currentContent = inputEditorRef.current?.view?.state.doc.toString();
@@ -77,21 +71,12 @@ function App() {
 
   useKeyPress('Enter', handleAnalyze, { shift: true, disabled: isAnalyzing });
 
-  /**
-   * Function to save metrics of the session and reset the metrics.
-   */
-  const saveAndResetSession = useCallback(() => {
-    const timestamp = new Date().toISOString();
-    localStorage.setItem(`testSession_${timestamp}`, JSON.stringify({ timestamp, metrics }));
-    resetMetrics();
-  }, [metrics, resetMetrics]);
-
   return (
     <ErrorBoundary>
       <div className={styles.app}>
         <h1 className={styles.title}>documntr</h1>
-        <SessionButton onSaveSession={saveAndResetSession} />
-        <MetricsDisplay metrics={metrics} />
+        <SessionButton onSaveSession={saveSession} />
+        <MetricsDisplay testSession={testSession} />
         <EditorContainer
           inputCode={inputCode}
           setInputCode={setInputCode}
