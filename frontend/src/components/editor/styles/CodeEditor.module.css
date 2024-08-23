@@ -30,6 +30,19 @@
   align-items: center;
 }
 
+/**
+ * Styles the language selection dropdown.
+ *
+ * @class languageSelect
+ * @property {string} padding - The padding inside the dropdown.
+ * @property {string} border-radius - The radius of dropdown corners.
+ * @property {string} background-color - The background color of the dropdown.
+ * @property {string} color - The text color of the dropdown.
+ * @property {string} border - The border style of the dropdown.
+ * @property {string} font-size - The font size of the dropdown text.
+ * @property {string} max-width - The maximum width of the dropdown.
+ * @property {string} font-family - The font family applied to the dropdown.
+ */
 .languageSelect {
   padding: 5px;
   border-radius: 4px;
@@ -37,19 +50,40 @@
   color: #f8f8f2;
   border: none;
   font-size: 14px;
-  max-width: 150px; /* Adjust this value as needed */
+  max-width: 150px;
   font-family: 'Source Code Pro', monospace;
 }
 
+/**
+ * Styles for hover state of the language selection dropdown.
+ *
+ * @class languageSelect:hover
+ * @property {string} background-color - The background color when hovered.
+ */
 .languageSelect:hover {
   background-color: rgba(60, 64, 72, 0.7);
 }
 
+/**
+ * Styles for the disabled state of the language selection dropdown.
+ *
+ * @class languageSelect:disabled
+ * @property {number} opacity - The opacity for disabled dropdown.
+ * @property {string} cursor - The cursor style for disabled dropdown.
+ */
 .languageSelect:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
+/**
+ * Styles for dropdown options.
+ *
+ * @class languageSelect option
+ * @property {string} background-color - The background color of options.
+ * @property {string} color - The text color of options.
+ * @property {string} font-family - The font family applied to options.
+ */
 .languageSelect option {
   background-color: #1e1e1e;
   color: #e2e4e7;
@@ -62,10 +96,31 @@
   position: relative;
 }
 
-.editorWrapper > div {
+/**
+ * Styles for divs inside the editor wrapper.
+ *
+ * @class editorWrapper>div
+ * @property {string} height - The height of the div elements.
+ */
+.editorWrapper>div {
   height: 100%;
 }
 
+/**
+ * Styles for overlay that appears during analysis.
+ *
+ * @class overlay
+ * @property {string} position - The position of the overlay.
+ * @property {string} top - The top placement of the overlay.
+ * @property {string} left - The left placement of the overlay.
+ * @property {string} right - The right placement of the overlay.
+ * @property {string} bottom - The bottom placement of the overlay.
+ * @property {string} background-color - The background color of the overlay.
+ * @property {string} display - The display style of the overlay.
+ * @property {string} justify-content - The content alignment of the overlay.
+ * @property {string} align-items - The vertical alignment of the overlay.
+ * @property {number} z-index - The stacking order of the overlay.
+ */
 .overlay {
   position: absolute;
   top: 0;
@@ -79,6 +134,15 @@
   z-index: 10;
 }
 
+/**
+ * Styles for the content of the overlay.
+ *
+ * @class overlay::after
+ * @property {string} content - The message displayed in the overlay.
+ * @property {string} color - The text color of the overlay message.
+ * @property {string} font-size - The font size of the overlay message.
+ * @property {string} font-weight - The font weight of the overlay message.
+ */
 .overlay::after {
   content: 'Analysis in progress...';
   color: white;
@@ -89,4 +153,53 @@
 .copyButtonContainer {
   display: flex;
   align-items: center;
+}
+
+/**
+ * Styles for the code editor container.
+ *
+ * @class codeEditorContainer
+ * @property {string} height - The height of the code editor container.
+ * @property {string} display - The display style of the container.
+ * @property {string} flex-direction - The direction of flexible items in the container.
+ */
+.codeEditorContainer {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.codeMirrorWrapper {
+  flex: 1;
+  overflow: hidden;
+}
+
+/**
+ * Ensure CodeMirror fills the entire space.
+ *
+ * @class codeMirrorWrapper :global(.cm-editor)
+ * @property {string} height - The height of the CodeMirror editor.
+ */
+.codeMirrorWrapper :global(.cm-editor) {
+  height: 100% !important;
+}
+
+/**
+ * Ensure CodeMirror scroller has a minimum height.
+ *
+ * @class codeMirrorWrapper :global(.cm-scroller)
+ * @property {string} min-height - The minimum height of the scroller.
+ */
+.codeMirrorWrapper :global(.cm-scroller) {
+  min-height: 100% !important;
+}
+
+/**
+ * Ensure CodeMirror content has a minimum height.
+ *
+ * @class codeMirrorWrapper :global(.cm-content)
+ * @property {string} min-height - The minimum height of the content.
+ */
+.codeMirrorWrapper :global(.cm-content) {
+  min-height: 100% !important;
 }

@@ -1,11 +1,12 @@
 .metricsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
   background-color: rgba(40, 44, 52, 0.7);
   backdrop-filter: blur(10px);
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 2rem;
-  display: flex;
-  justify-content: space-between;
   width: 100%;
   max-width: 800px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -17,14 +18,19 @@
   align-items: center;
   text-align: center;
   padding: 0 10px;
+  flex: 1 0 calc(10% - 20px);
 }
 
 .metricLabel {
   font-size: 0.8rem;
   color: #8a9199;
-  margin-bottom: 5px;
+  margin-bottom: 25px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  height: 2.5em;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
 }
 
 .metricValue {
@@ -33,14 +39,9 @@
   font-weight: 500;
 }
 
-/**
- * Media query for responsive design.
- * Adjusts the layout for screens smaller than 768px.
- */
 @media (max-width: 768px) {
   .metricsContainer {
     flex-direction: column;
-    align-items: flex-start;
   }
 
   .metricItem {
@@ -52,5 +53,7 @@
 
   .metricLabel {
     margin-bottom: 0;
+    justify-content: flex-start;
+    height: auto;
   }
 }

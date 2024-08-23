@@ -3,6 +3,7 @@
     color: #e2e4e7;
     border: none;
     padding: 8px 16px;
+    margin-top: 16px;
     margin-bottom: 16px;
     font-size: 14px;
     border-radius: 4px;
@@ -49,5 +50,7 @@
  * Animation keyframes for the spinner rotation effect.
  */
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }

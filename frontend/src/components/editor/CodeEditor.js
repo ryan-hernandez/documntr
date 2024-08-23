@@ -1,40 +1,40 @@
-import React, { forwardRef } from 'react';
-import CodeMirrorWrapper from './CodeMirrorWrapper';
-import EditorHeader from './EditorHeader';
+import React from 'react';
+import CodeMirror from '@uiw/react-codemirror';
+import { customDraculaTheme } from './config/themes/customDraculaTheme';
+import { getLanguageExtension } from './utils/languageOptions';
+import { codeMirrorSetup } from './config/codeMirrorConfig';
 import styles from './styles/CodeEditor.module.css';
 
 /**
- * CodeEditor component that renders a code editor with a header.
+ * CodeEditor component for rendering a code editor using CodeMirror.
  *
  * @param {Object} props - The properties passed to the component.
  * @param {string} props.value - The current value of the code editor.
  * @param {function} props.onChange - Callback function triggered when the value changes.
- * @param {string} props.label - The label displayed in the editor header.
- * @param {boolean} [props.readOnly=false] - Indicates if the editor is read-only.
- * @param {boolean} [props.disabled=false] - Indicates if the editor is disabled.
+ * @param {string} props.label - The label for the code editor (not used in this snippet).
+ * @param {boolean} props.disabled - Indicates whether the editor is disabled.
  * @param {string} props.language - The programming language for syntax highlighting.
- * @param {function} props.onLanguageChange - Callback function triggered when the language changes.
- * @param {React.Ref} ref - The ref forwarded to the CodeMirrorWrapper.
- *
- * @return {JSX.Element} The rendered component.
+ * @param {function} props.onLanguageChange - Callback function triggered when the language changes (not used in this snippet).
+ * @param {boolean} props.readOnly - Indicates whether the editor is read-only.
+ * @param {React.Ref} ref - Ref for the CodeMirror component.
+ * @returns {JSX.Element} The rendered CodeEditor component.
  */
-const CodeEditor = forwardRef(({ value, onChange, label, readOnly = false, disabled = false, language, onLanguageChange }, ref) => {
+const CodeEditor = React.forwardRef(({ value, onChange, label, disabled, language, onLanguageChange, readOnly }, ref) => {
   return (
-    <div className={styles.codeContainer}>
-      <EditorHeader
-        label={label}
-        readOnly={readOnly}
-        disabled={disabled}
-        language={language}
-        onLanguageChange={onLanguageChange}
+    <div className={styles.codeEditorContainer}>
+      <CodeMirror
         value={value}
-      />
-      <CodeMirrorWrapper
-        value={value}
+        height="100%"
+        theme={customDraculaTheme}
+        extensions={[getLanguageExtension(language)()]}
         onChange={onChange}
-        readOnly={readOnly}
-        disabled={disabled}
-        language={language}
+        editable={!readOnly && !disabled}
+        basicSetup={{
+          ...codeMirrorSetup,
+          lineNumbers: true,
+          foldGutter: true,
+        }}
+        className={styles.codeMirrorWrapper}
         ref={ref}
       />
     </div>

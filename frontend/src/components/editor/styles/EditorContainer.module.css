@@ -1,0 +1,103 @@
+.editorsContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.editorWrapper {
+    flex: 1;
+    border-radius: 8px;
+    overflow: hidden;
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    height: 500px;
+}
+
+.editorHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #282a36;
+    border-bottom: 1px solid #44475a;
+}
+
+.editorHeader h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #e2e4e7;
+}
+
+.editorControls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.editorContent {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.placeholderEditor {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #282a36;
+    color: #6d8a88;
+    font-style: italic;
+    font-size: 14px;
+}
+
+/**
+ * Ensures that the CodeMirror editor fills the entire content area.
+ */
+.editorContent :global(.cm-editor) {
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column;
+}
+
+/**
+ * Ensures that the CodeMirror scroller fills the available space and is scrollable.
+ */
+.editorContent :global(.cm-scroller) {
+    flex: 1 !important;
+    overflow: auto;
+}
+
+/**
+ * Ensures that the CodeMirror content area has a minimum height for proper display.
+ */
+.editorContent :global(.cm-content) {
+    min-height: 100% !important;
+}
+
+/**
+ * Ensures that the CodeMirror gutters fill the entire height of the editor.
+ */
+.editorContent :global(.cm-gutters) {
+    height: 100% !important;
+}
+
+/**
+ * Applies responsive design rules for screen sizes with a maximum width of 768px.
+ */
+@media (max-width: 768px) {
+    .editorsContainer {
+        flex-direction: column;
+    }
+
+    .editorWrapper {
+        margin-bottom: 1rem;
+    }
+}

@@ -1,220 +1,108 @@
-import React, { useState, useRef, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useRef, useCallback } from 'react';
 import styles from './App.module.css';
 import MetricsDisplay from './components/metrics/MetricsDisplay';
-import CodeEditor from './components/editor/CodeEditor';
 import AnalyzeButton from './components/AnalyzeButton';
 import ErrorDisplay from './components/ErrorDisplay';
 import ErrorBoundary from './components/ErrorBoundary';
 import SessionButton from './components/metrics/SessionButton';
 import { languageOptions } from './components/editor/utils/languageOptions';
+import useCodeAnalysis from './hooks/useCodeAnalysis';
+import useKeyPress from './hooks/useKeyPress';
+import useMetrics from './hooks/useMetrics';
+import EditorContainer from './components/editor/EditorContainer';
+
+const INITIAL_METRICS = {
+  generationTime: 0,
+  totalTime: 0,
+  averageTime: 0,
+  tokenTimeRatio: 0,
+  numGenerations: 0,
+  inputTokenCount: 0,
+  totalTokens: 0,
+  averageTokenTimeRatio: 0,
+  averageTokens: 0,
+};
 
 /**
- * App component that manages the code analysis functionality.
- * It allows users to input code, analyze it, and view the documented results.
+ * Main application component.
  *
- * @returns {JSX.Element} The rendered App component.
+ * @returns {JSX.Element} The rendered component.
  */
 function App() {
   const [inputCode, setInputCode] = useState('');
   const [documentedCode, setDocumentedCode] = useState('');
   const [selectedLanguage, setSelectedLanguage] = useState(languageOptions[0].value);
-  const [metrics, setMetrics] = useState({
-    generationTime: 0,
-    averageTime: 0,
-    tokenTimeRatio: 0,
-    numGenerations: 0,
-    inputTokenCount: 0
-  });
   const [error, setError] = useState(null);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const startTimeRef = useRef(null);
-  const timerRef = useRef(null);
-  const isAnalyzingRef = useRef(false);
   const inputEditorRef = useRef(null);
 
+  const { metrics, updateMetrics, resetMetrics, updateGenerationTime } = useMetrics(INITIAL_METRICS);
+
   /**
-   * Handles the key press event for initiating code analysis.
+   * Callback function to handle successful code analysis.
    *
-   * @param {KeyboardEvent} event - The keyboard event triggered when a key is pressed.
+   * @param {Object} result - The result of the code analysis.
    */
-  const handleKeyPress = (event) => {
-    if (event.key === 'Enter' && event.shiftKey && !isAnalyzing) {
-      event.preventDefault();
-      handleAnalyze();
-    }
-  };
+  const handleAnalysisSuccess = useCallback((result) => {
+    setDocumentedCode(result.documented_code);
+    updateMetrics(result);
+  }, [updateMetrics]);
 
   /**
-   * Effect hook to clean up the animation frame on component unmount.
-   */
-  useEffect(() => {
-    document.addEventListener('keydown', handleKeyPress);
-    return () => {
-      document.removeEventListener('keydown', handleKeyPress);
-    };
-  }, [isAnalyzing]);
-
-  /**
-   * Updates the timer by calculating the elapsed time and adjusting metrics accordingly.
-   * This function is called recursively using requestAnimationFrame.
-   */
-  const updateTimer = () => {
-    if (!isAnalyzingRef.current) {
-      return;
-    }
-    const currentTime = performance.now();
-    const elapsedTime = (currentTime - startTimeRef.current) / 1000;
-    setMetrics(prev => ({
-      ...prev,
-      generationTime: elapsedTime
-    }));
-    timerRef.current = requestAnimationFrame(updateTimer);
-  };
-
-  /**
-   * Handles the analysis of the input code by making an API request
-   * to retrieve the documented code and updates metrics.
+   * Callback function to update the timer on elapsed time.
    *
-   * @param {string} codeToAnalyze - The code to be analyzed.
-   * @returns {Promise<void>} A promise that resolves when the analysis is complete.
+   * @param {number} elapsedTime - The time elapsed since the analysis started.
    */
-  const handleAnalyze = async () => {
-    let codeToAnalyze = "";
-    if (inputEditorRef.current && inputEditorRef.current.view) {
-      const editorView = inputEditorRef.current.view;
-      const editorState = editorView.state;
-      const currentContent = editorState.doc.toString();
-      codeToAnalyze = currentContent;
-      setInputCode(currentContent);
-    } else {
-      console.error('Unable to access editor content');
-      setError('Unable to access editor content. Please try again.');
-    }
+  const handleTimerUpdate = useCallback((elapsedTime) => {
+    updateGenerationTime(elapsedTime);
+  }, [updateGenerationTime]);
 
-    // Ensure codeToAnalyze is a string
-    if (typeof codeToAnalyze !== 'string') {
-      console.error('Invalid input: codeToAnalyze is not a string', codeToAnalyze);
-      setError("Invalid input. Please ensure you've entered valid code.");
-      return;
-    }
+  const { analyzeCode, isAnalyzing } = useCodeAnalysis({
+    onSuccess: handleAnalysisSuccess,
+    onError: setError,
+    onTimerUpdate: handleTimerUpdate,
+  });
 
-    if (!codeToAnalyze.trim()) {
+  /**
+   * Function to handle the analysis of the code.
+   */
+  const handleAnalyze = useCallback(() => {
+    const currentContent = inputEditorRef.current?.view?.state.doc.toString();
+    if (!currentContent?.trim()) {
       setError("Please enter some code before analyzing.");
       return;
     }
+    setInputCode(currentContent);
+    analyzeCode(currentContent, selectedLanguage);
+  }, [analyzeCode, selectedLanguage]);
 
-    setIsAnalyzing(true);
-    isAnalyzingRef.current = true;
-    setError(null);
-    setDocumentedCode('');
-    startTimeRef.current = performance.now();
-    updateTimer();
-
-    try {
-      const response = await axios.post('http://localhost:5000/analyze',
-        { code: codeToAnalyze, language: selectedLanguage },
-        {
-          headers: { 'Content-Type': 'application/json' },
-          timeout: 60000 // 60 seconds timeout
-        }
-      );
-
-      if (response.data && response.data.documented_code) {
-        setDocumentedCode(response.data.documented_code);
-        const endTime = performance.now();
-        const actualGenerationTime = (endTime - startTimeRef.current) / 1000;
-
-        setMetrics(prev => {
-          const newNumGenerations = prev.numGenerations + 1;
-          const newTotalTime = prev.averageTime * prev.numGenerations + actualGenerationTime;
-          const newAverageTime = newTotalTime / newNumGenerations;
-
-          return {
-            generationTime: parseFloat(actualGenerationTime.toFixed(3)),
-            averageTime: parseFloat(newAverageTime.toFixed(3)),
-            inputTokenCount: response.data.total_tokens,
-            tokenTimeRatio: parseFloat((response.data.total_tokens / actualGenerationTime).toFixed(3)),
-            numGenerations: newNumGenerations
-          };
-        });
-      } else {
-        throw new Error('Invalid response from server');
-      }
-    } catch (err) {
-      console.error('Analysis error:', err);
-      setError(err.response?.data?.error || err.message || 'An error occurred during analysis');
-    } finally {
-      setIsAnalyzing(false);
-      isAnalyzingRef.current = false;
-      if (timerRef.current) {
-        cancelAnimationFrame(timerRef.current);
-      }
-    }
-  };
+  useKeyPress('Enter', handleAnalyze, { shift: true, disabled: isAnalyzing });
 
   /**
-   * Saves the current session metrics to local storage
-   * and resets the metrics to their initial state.
+   * Function to save metrics of the session and reset the metrics.
    */
-  const saveAndResetSession = () => {
+  const saveAndResetSession = useCallback(() => {
     const timestamp = new Date().toISOString();
-    const sessionData = JSON.stringify({ timestamp, metrics });
-    localStorage.setItem(`testSession_${timestamp}`, sessionData);
-    setMetrics({
-      generationTime: 0,
-      averageTime: 0,
-      tokenTimeRatio: 0,
-      numGenerations: 0,
-      inputTokenCount: 0
-    });
-  };
+    localStorage.setItem(`testSession_${timestamp}`, JSON.stringify({ timestamp, metrics }));
+    resetMetrics();
+  }, [metrics, resetMetrics]);
 
   return (
     <ErrorBoundary>
       <div className={styles.app}>
         <h1 className={styles.title}>documntr</h1>
-
         <SessionButton onSaveSession={saveAndResetSession} />
-
         <MetricsDisplay metrics={metrics} />
-
-        <div className={styles.editorsContainer}>
-          <div className={styles.editorWrapper}>
-            <CodeEditor
-              value={inputCode}
-              onChange={setInputCode}
-              label="Input Code"
-              disabled={isAnalyzing}
-              language={selectedLanguage}
-              onLanguageChange={setSelectedLanguage}
-              ref={inputEditorRef}
-            />
-          </div>
-
-          <div className={styles.editorWrapper}>
-            {documentedCode ? (
-              <CodeEditor
-                value={documentedCode}
-                onChange={() => { }}
-                label="Documented Code"
-                readOnly={true}
-                disabled={false}
-                language={selectedLanguage}
-                onLanguageChange={() => { }}
-              />
-            ) : (
-              <div className={styles.placeholderEditor}>
-                <p>Documented code will appear here after analysis.</p>
-              </div>
-            )}
-          </div>
-        </div>
-
+        <EditorContainer
+          inputCode={inputCode}
+          setInputCode={setInputCode}
+          documentedCode={documentedCode}
+          selectedLanguage={selectedLanguage}
+          setSelectedLanguage={setSelectedLanguage}
+          isAnalyzing={isAnalyzing}
+          inputEditorRef={inputEditorRef}
+        />
         <AnalyzeButton onClick={handleAnalyze} isAnalyzing={isAnalyzing} />
-        <span className={styles.analyzeDescriptor}>
-          shift+enter
-        </span>
+        <span className={styles.analyzeDescriptor}>shift+enter</span>
         {error && <ErrorDisplay error={error} />}
       </div>
     </ErrorBoundary>
