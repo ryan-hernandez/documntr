@@ -2,20 +2,19 @@
 
 This is the backend for the documntr application, built with Flask.
 
-## Tech Stack
+## Prerequisites
 
-- Flask 2.0.1
-- Flask-CORS for handling Cross-Origin Resource Sharing (CORS)
-- OpenAI API for AI-powered code documentation
+- Python 3.9+
+- pip
 
-## Setup
+## Development Setup
 
 1. Navigate to the backend directory:
    ```
    cd backend
    ```
 
-2. Create and activate a virtual environment:
+2. Create a virtual environment:
    ```
    python -m venv venv
    source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
@@ -26,9 +25,9 @@ This is the backend for the documntr application, built with Flask.
    pip install -r requirements.txt
    ```
 
-4. Set up environment variables:
-   Create a `.env` file in the backend directory with the following content:
+4. Create a `.env.dev` file in the backend directory with the following content:
    ```
+   FLASK_APP=app.py
    FLASK_ENV=development
    SECRET_KEY=your_secret_key_here
    OPENAI_API_KEY=your_openai_api_key_here
@@ -36,36 +35,28 @@ This is the backend for the documntr application, built with Flask.
 
 5. Run the Flask application:
    ```
-   python app.py
+   flask run
    ```
 
 6. The API will be available at `http://localhost:5000`.
 
-## API Endpoints
+## Running with Docker
 
-- `POST /analyze`: Analyzes and documents Python code.
-  - Request body:
-  ```
-  { "code": "your_code_here" }
-  ```
-  - Response: `
-  ```
-  { "documented_code": "...", "generation_time": 0.5, "average_time": 0.6, "total_tokens": 100, "token_time_ratio": 200 }
-  ```
+The backend is typically run as part of the whole application using Docker Compose. See the root README for instructions.
 
-## Testing
+## Debugging
+
+### Using VS Code
+
+1. Ensure you have the Python extension installed in VS Code.
+2. Set breakpoints in your Python code.
+3. In VS Code, go to the Debug view and select "Docker: Python - Flask" from the dropdown.
+4. Start debugging.
+
+## Running Tests
 
 Run tests using pytest:
 
 ```
 pytest
-```
-
-## Docker
-
-To build and run the backend in a Docker container:
-
-```
-docker build -t backend .
-docker run -p 5000:5000 backend
 ```

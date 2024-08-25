@@ -2,15 +2,6 @@
 
 documntr is an AI-powered web application that automatically generates documentation for code. It utilizes a React frontend and a Flask backend to provide a seamless documentation experience.
 
-<image src="example.gif"></image>
-
-## Features
-
-- Automatic code documentation generation using AI
-- Real-time code input and documentation output
-- Performance metrics display
-- Session saving functionality
-
 ## Prerequisites
 
 - Docker and Docker Compose
@@ -18,60 +9,61 @@ documntr is an AI-powered web application that automatically generates documenta
 - Python 3.9+ (for local backend development)
 - OpenAI API key
 
-## Quick Start
+## Quick Start (Development)
 
 1. Clone the repository:
    ```
-   git clone https://github.com/ryan-hernandez/documntr.git
+   git clone https://github.com/your-username/documntr.git
    cd documntr
    ```
 
-2. Set up your OpenAI API key:
-   - Create a `.env` file in the root directory and add:
+2. Set up your environment variables:
+   - Create a `.env.dev` file in both the `frontend` and `backend` directories.
+   - In `backend/.env.dev`, add:
      ```
-     OPENAI_API_KEY=your_api_key_here
+     FLASK_APP=app.py
+     FLASK_ENV=development
+     SECRET_KEY=your_secret_key_here
+     OPENAI_API_KEY=your_openai_api_key_here
      ```
-   - Or set it as an environment variable:
+   - In `frontend/.env.dev`, add:
      ```
-     export OPENAI_API_KEY=<your-key-here>
+     REACT_APP_API_URL=http://localhost:5000
      ```
 
 3. Build and run the Docker containers:
    ```
-   docker-compose up --build
+   docker-compose -f docker-compose.dev.yml up --build
    ```
 
 4. Open your browser and navigate to `http://localhost:3000` to use the application.
 
-## Development
+## Debugging
 
-For detailed information on developing the frontend and backend, please refer to their respective README files:
+### Backend (Flask)
 
-- [Frontend README](./frontend/README.md)
-- [Backend README](./backend/README.md)
+1. Ensure you have the Python extension installed in VS Code.
+2. Set breakpoints in your Python code.
+3. In VS Code, go to the Debug view and select "Docker: Python - Flask" from the dropdown.
+4. Start debugging.
 
-## Testing
+### Frontend (React)
 
-Run tests for both frontend and backend:
+1. Ensure you have the Chrome Debugger extension installed in VS Code.
+2. Set breakpoints in your JavaScript code.
+3. In VS Code, go to the Debug view and select "Docker: Node.js" from the dropdown.
+4. Start debugging.
 
-```
-docker-compose run frontend npm test
-docker-compose run backend pytest
-```
+You can also use the browser's developer tools to debug the frontend application.
 
-## Troubleshooting
+## Project Structure
 
-Common issues and their solutions:
+- `/frontend`: React frontend application
+- `/backend`: Flask backend application
+- `docker-compose.dev.yml`: Docker Compose configuration for development
 
-1. **Docker containers fail to start**: Ensure Docker is running and you have the latest version of Docker and Docker Compose.
-2. **API calls fail**: Check that your OpenAI API key is correctly set in the `.env` file or as an environment variable.
-
-For code issues, please open an issue on GitHub.
+For more detailed instructions, see the README files in the `frontend` and `backend` directories.
 
 ## License
 
 © Ryan Hernandez 2024. All rights reserved.
-
-## Contact
-
-For inquiries, please contact [Ryan](mailto:ryanmichaelhernandez@gmail.com?subject=[GitHub]%20documntr).
