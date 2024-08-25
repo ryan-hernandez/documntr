@@ -15,7 +15,7 @@ documntr is an AI-powered web application that automatically generates documenta
 
 1. Clone the repository:
    ```
-   git clone https://github.com/your-username/documntr.git
+   git clone https://github.com/ryan-hernandez/documntr.git
    cd documntr
    ```
 
