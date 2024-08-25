@@ -1,8 +1,8 @@
 {
   "dependencies": {
-    "@babel/core": "^7.16.0",
-    "@babel/preset-env": "^7.16.0",
-    "@babel/preset-react": "^7.16.0",
+    "@babel/core": "^7.22.5",
+    "@babel/preset-env": "^7.22.5",
+    "@babel/preset-react": "^7.22.5",
     "@codemirror/lang-cpp": "^6.0.2",
     "@codemirror/lang-css": "^6.2.1",
     "@codemirror/lang-html": "^6.4.8",
@@ -19,17 +19,16 @@
     "@replit/codemirror-lang-csharp": "^6.1.0",
     "@uiw/codemirror-theme-dracula": "^4.21.7",
     "@uiw/react-codemirror": "^4.21.7",
-    "axios": ">=1.7.4",
-    "postcss": ">=8.4.31",
-    "react": "^17.0.2",
+    "axios": "^1.4.0",
+    "postcss": "^8.4.24",
+    "react": "^18.2.0",
     "react-custom-scrollbars-2": "^4.5.0",
-    "react-dom": "^17.0.2",
-    "react-scripts": "^5.0.1"
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1"
   },
   "scripts": {
-    "start": "WATCHPACK_POLLING=true react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
     "eject": "react-scripts eject",
     "prepare": "husky install",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
@@ -53,8 +52,8 @@
   },
   "proxy": "http://backend:5000",
   "devDependencies": {
-    "husky": "^9.1.5",
-    "lint-staged": "^15.2.9",
-    "prettier": "^3.3.3"
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.2",
+    "prettier": "^2.8.8"
   }
 }

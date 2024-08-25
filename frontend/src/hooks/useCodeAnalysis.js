@@ -46,15 +46,15 @@ const useCodeAnalysis = ({ onSuccess, onError, onProgress }) => {
      * @returns {Promise<void>} - A promise that resolves when the analysis is complete.
      */
     const analyzeCode = useCallback(async (code, language) => {
+        if (!code) return;
+
         setIsAnalyzing(true);
         startTimeRef.current = performance.now();
         progressIntervalRef.current = setInterval(updateProgress, 10); // Update every 10ms for smoother animation
 
         try {
             const inputTokens = estimateTokens(code);
-
             const response = await axios.post('http://localhost:5000/analyze', { code, language });
-
             const endTime = performance.now();
             const generationTime = (endTime - startTimeRef.current) / 1000; // Convert to seconds
 

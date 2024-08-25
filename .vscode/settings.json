@@ -10,9 +10,7 @@
     "git.openRepositoryInParentFolders": "never",
     "explorer.confirmDelete": false,
     "go.toolsManagement.autoUpdate": true,
-    "notebook.codeActionsOnSave": {
-
-    },
+    "notebook.codeActionsOnSave": {},
     "python.formatting.provider": "black",
     "editor.formatOnSave": true,
     "[python]": {
@@ -21,7 +19,10 @@
             "source.organizeImports": true
         }
     },
-    "isort.args": ["--profile", "black"],
+    "isort.args": [
+        "--profile",
+        "black"
+    ],
     "python.linting.enabled": true,
     "python.linting.lintOnSave": true,
     "python.linting.flake8Enabled": false,
@@ -30,5 +31,8 @@
     "python.linting.banditEnabled": false,
     "python.linting.prospectorEnabled": false,
     "python.linting.pycodestyleEnabled": false,
-    "python.linting.pydocstyleEnabled": false
+    "python.linting.pydocstyleEnabled": false,
+    "python.analysis.extraPaths": [
+        "./backend/documntr"
+    ]
 }
