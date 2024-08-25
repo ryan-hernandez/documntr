@@ -1,17 +1,16 @@
-FROM python:3.9-slim
+FROM python:3.9-slim-buster
 
 WORKDIR /app
 
-RUN pip install --no-cache-dir --upgrade pip
+RUN apt-get update && apt-get install -y \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt .
+COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
+
+RUN pip install debugpy
 
 COPY . .
 
-EXPOSE 5000
-
-ENV FLASK_ENV=development
-ENV FLASK_DEBUG=1
-
-CMD ["python", "app.py"]
+CMD ["python", "-m", "debugpy", "--listen", "0.0.0.0:5678", "-m", "flask", "run", "--host=0.0.0.0", "--port=5000"]

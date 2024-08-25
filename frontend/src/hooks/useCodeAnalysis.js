@@ -47,7 +47,6 @@ const useCodeAnalysis = ({ onSuccess, onError, onProgress }) => {
      */
     const analyzeCode = useCallback(async (code, language) => {
         if (!code) return;
-
         setIsAnalyzing(true);
         startTimeRef.current = performance.now();
         progressIntervalRef.current = setInterval(updateProgress, 10); // Update every 10ms for smoother animation
