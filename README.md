@@ -2,6 +2,8 @@
 
 documntr is an AI-powered web application that automatically generates documentation for code. It utilizes a React frontend and a Flask backend to provide a seamless documentation experience.
 
+![documntr](example.gif)
+
 ## Prerequisites
 
 - Docker and Docker Compose
